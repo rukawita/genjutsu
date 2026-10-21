@@ -162,8 +162,14 @@
       /* Radio Cards for Mode Selection */
       .mode-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(3, 1fr);
         gap: 12px;
+      }
+
+      @media (max-width: 760px) {
+        .mode-grid {
+          grid-template-columns: 1fr;
+        }
       }
 
       .radio-card {
@@ -848,23 +854,33 @@
           <fieldset>
             <legend>1. ¿Qué quieres hacer hoy?</legend>
             <div class="mode-grid">
-              <label class="radio-card" for="modeMotion">
+              <label class="radio-card" for="modeFaceswap">
                 <div class="radio-card-header">
-                  <span>Motion Transfer</span>
-                  <input type="radio" id="modeMotion" name="mode" value="motion-control" checked />
+                  <span>🎭 Cambiar Cara</span>
+                  <input type="radio" id="modeFaceswap" name="mode" value="faceswap" checked />
                 </div>
                 <div class="radio-card-desc">
-                  Tu personaje (<strong>Imagen</strong>) imita el movimiento y cámara de tu <strong>Video</strong>.
+                  Pone la cara de tu <strong>Foto</strong> en el <strong>Video</strong>, con los mismos movimientos y escena. (Más rápido)
                 </div>
               </label>
 
-              <label class="radio-card" for="modeReplace">
+              <label class="radio-card" for="modeMotion">
                 <div class="radio-card-header">
-                  <span>Objects Swap</span>
-                  <input type="radio" id="modeReplace" name="mode" value="replace-objects" />
+                  <span>🕺 Motion Transfer</span>
+                  <input type="radio" id="modeMotion" name="mode" value="motion" />
                 </div>
                 <div class="radio-card-desc">
-                  Integra o reemplaza al sujeto dentro de tu <strong>Video</strong> usando tu <strong>Imagen</strong>.
+                  Tu <strong>Personaje</strong> completo copia los movimientos del <strong>Video</strong> (Wan 2.2 Animate).
+                </div>
+              </label>
+
+              <label class="radio-card" for="modeLive">
+                <div class="radio-card-header">
+                  <span>🗣️ Animar Rostro</span>
+                  <input type="radio" id="modeLive" name="mode" value="liveportrait" />
+                </div>
+                <div class="radio-card-desc">
+                  Tu <strong>Foto</strong> cobra vida con los gestos y expresiones del <strong>Video</strong> (LivePortrait).
                 </div>
               </label>
             </div>
@@ -935,7 +951,7 @@
             <div class="preset-bar">
               <span class="preset-bar-label">¿Sin video a mano?</span>
               <button type="button" class="mini-btn" id="loadDemoVideoActionBtn">
-                🎬 Cargar Video Demo (Cámara Acción)
+                🎬 Usar Video de Ejemplo
               </button>
             </div>
           </div>
@@ -994,16 +1010,15 @@
             </div>
 
             <div class="preset-bar">
-              <span class="preset-bar-label">Personajes Demo:</span>
-              <button type="button" class="mini-btn" data-demo-char="samurai">⚔️ Samurái Neón</button>
-              <button type="button" class="mini-btn" data-demo-char="ninja">🔥 Ninja Genjutsu</button>
-              <button type="button" class="mini-btn" data-demo-char="mecha">🤖 Mecha Cyber</button>
+              <span class="preset-bar-label">Caras de ejemplo:</span>
+              <button type="button" class="mini-btn" data-demo-char="s9">👩 Ejemplo 1</button>
+              <button type="button" class="mini-btn" data-demo-char="s6">🧑 Ejemplo 2</button>
             </div>
           </div>
         </div>
 
         <!-- 3. ESTILO VISUAL & CONTROL DE ESCENARIO -->
-        <div class="card section-stack">
+        <div class="card section-stack" hidden>
           <fieldset>
             <legend>3. Estilo Visual y Efectos</legend>
             <div class="style-grid">
@@ -1074,7 +1089,7 @@
         <div class="card section-stack">
           <div>
             <div class="prompt-header">
-              <label for="promptTextarea" class="prompt-label">5. Describe la Acción (Opcional)</label>
+              <label for="promptTextarea" class="prompt-label">3. Describe la Acción (Opcional · solo Motion Transfer)</label>
               <div class="chip-group">
                 <button type="button" class="mention-chip" data-insert="@image1">+ @image1 (Personaje)</button>
                 <button type="button" class="mention-chip" data-insert="@video1">+ @video1 (Video)</button>
@@ -1092,6 +1107,21 @@
             </svg>
             <span id="generateBtnText">Generar Video Gratis Ahora</span>
           </button>
+
+          <!-- Opcional: más cupo de GPU gratis con token de Hugging Face -->
+          <details class="cloud-drawer" id="hfDrawer">
+            <summary>🚀 Opcional: más velocidad con un token GRATIS de Hugging Face</summary>
+            <div class="input-field" style="margin-top: 12px;">
+              <label for="hfTokenInput">
+                Token de Hugging Face (gratis en huggingface.co/settings/tokens · tipo "Read")
+              </label>
+              <input type="password" id="hfTokenInput" placeholder="hf_..." autocomplete="off" />
+              <span style="font-size: 0.74rem; color: var(--muted);">
+                Sin token: "Cambiar Cara" funciona igual (gratis, en CPU, tarda unos minutos).
+                "Motion Transfer" y "Animar Rostro" usan GPU y con token tienen más cupo diario.
+              </span>
+            </div>
+          </details>
 
           <!-- Opcional: Motor Cloud con API Key -->
           <details class="cloud-drawer">
@@ -1751,11 +1781,55 @@
         ctx.restore();
       }
 
-      // Loop de previsualización en vivo en el monitor
-      function previewLoop(nowMs) {
-        if (!state.isRendering) {
-          renderCompositeFrame(nowMs * 0.001);
+      // Monitor en vivo: muestra el video base y la cara elegida lado a lado (sin superponer)
+      function renderIdleMonitor() {
+        const W = synthCanvas.width;
+        const H = synthCanvas.height;
+        ctx.save();
+        ctx.fillStyle = "#05070b";
+        ctx.fillRect(0, 0, W, H);
+        const videoEl = state.sourceVideo?.videoEl;
+        const img = state.images[0]?.imgEl;
+        if (videoEl && videoEl.readyState >= 2) {
+          const s = Math.min(W / videoEl.videoWidth, H / videoEl.videoHeight);
+          const vw = videoEl.videoWidth * s;
+          const vh = videoEl.videoHeight * s;
+          ctx.drawImage(videoEl, (W - vw) / 2, (H - vh) / 2, vw, vh);
         }
+        if (img) {
+          const size = Math.min(W, H) * 0.24;
+          const x = W - size - 20;
+          const y = 20;
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2);
+          ctx.clip();
+          const s = Math.max(size / img.width, size / img.height);
+          ctx.drawImage(img, x + (size - img.width * s) / 2, y + (size - img.height * s) / 2, img.width * s, img.height * s);
+          ctx.restore();
+          ctx.strokeStyle = "#c084fc";
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.fillStyle = "rgba(0,0,0,0.6)";
+        ctx.fillRect(0, H - 54, W, 54);
+        ctx.fillStyle = "#f3f5fa";
+        ctx.font = "700 22px system-ui, sans-serif";
+        ctx.textAlign = "center";
+        const msg = !videoEl
+          ? "Paso 1: sube tu video base"
+          : !img
+            ? "Paso 2: sube la foto con la cara"
+            : "Todo listo · toca \u201cGenerar Video Gratis Ahora\u201d";
+        ctx.fillText(msg, W / 2, H - 20);
+        ctx.restore();
+      }
+
+      // Loop de previsualización en vivo en el monitor
+      function previewLoop() {
+        renderIdleMonitor();
         requestAnimationFrame(previewLoop);
       }
       requestAnimationFrame(previewLoop);
@@ -1972,13 +2046,17 @@
         updateImageCardUI();
       });
 
-      loadDemoVideoActionBtn.addEventListener("click", () => {
-        loadDemoDrivingVideo();
+      loadDemoVideoActionBtn.addEventListener("click", async () => {
+        const blob = await fetch("/samples/d3.mp4").then((r) => r.blob());
+        await handleVideoFile(new File([blob], "video_ejemplo.mp4", { type: "video/mp4" }));
       });
 
       document.querySelectorAll("[data-demo-char]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          createDemoCharacterPreset(btn.getAttribute("data-demo-char"));
+        btn.addEventListener("click", async () => {
+          const name = btn.getAttribute("data-demo-char");
+          const blob = await fetch(`/samples/${name}.jpg`).then((r) => r.blob());
+          state.images = [];
+          await handleImageFiles([new File([blob], `cara_${name}.jpg`, { type: "image/jpeg" })]);
         });
       });
 
@@ -2039,12 +2117,80 @@
         if (chosenEngine !== "free-local" && apiKey) {
           await generateCloudVideo(chosenEngine, apiKey);
         } else {
-          await generateFreeVideoLocally();
+          await generateRealAIVideo();
         }
       });
 
-      // Cargar un personaje demo inicial al abrir para que el monitor se vea vivo de inmediato
-      createDemoCharacterPreset("samurai");
+      // GENERACIÓN GRATUITA CON IA REAL (Face Swap / Wan 2.2 Animate / LivePortrait en GPU gratis)
+      async function generateRealAIVideo() {
+        const image = state.images[0];
+        const video = state.sourceVideo;
+        if (!video?.localPath) {
+          alert("Falta el Paso 1: sube tu video base (o toca 'Usar Video de Ejemplo').");
+          return;
+        }
+        if (!image?.localPath) {
+          alert("Falta el Paso 2: sube una foto con la cara bien visible (o toca una cara de ejemplo).");
+          return;
+        }
+
+        state.isRendering = true;
+        generateBtn.disabled = true;
+        generateBtnText.textContent = "La IA está generando tu video...";
+        resultVideo.classList.remove("active");
+        downloadBar.classList.remove("active");
+        progressBanner.classList.add("active");
+        renderProgress.removeAttribute("value"); // barra indeterminada
+        progressPercentText.textContent = "";
+        progressStatusText.textContent = "Enviando a la IA gratuita...";
+        const startedAt = Date.now();
+
+        try {
+          const res = await fetch("/api/generate-free", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              mode: state.mode,
+              imagePath: image.localPath,
+              videoPath: video.localPath,
+              prompt: promptTextarea.value,
+              aspectRatio: state.aspectRatio,
+              hfToken: document.getElementById("hfTokenInput").value.trim(),
+            }),
+          });
+          const start = await res.json();
+          if (!start.ok) throw new Error(start.error);
+
+          let job;
+          while (true) {
+            await new Promise((r) => setTimeout(r, 2500));
+            job = await fetch(`/api/jobs/${start.jobId}`).then((r) => r.json());
+            const secs = Math.round((Date.now() - startedAt) / 1000);
+            progressStatusText.textContent = job.message || "Procesando...";
+            progressPercentText.textContent = `${secs}s`;
+            if (job.status !== "running") break;
+          }
+          if (job.status === "error") throw new Error(job.error);
+
+          resultVideo.src = job.videoUrl;
+          resultVideo.classList.add("active");
+          await resultVideo.play().catch(() => {});
+          downloadVideoLink.href = job.videoUrl;
+          downloadVideoLink.download = job.videoUrl.split("/").pop();
+          savedPathLabel.textContent = `Generado con ${job.engine} · guardado en ${job.videoUrl}`;
+          downloadBar.classList.add("active");
+        } catch (err) {
+          alert(`No se pudo generar el video:\n\n${err.message}`);
+        } finally {
+          progressBanner.classList.remove("active");
+          renderProgress.value = 0;
+          state.isRendering = false;
+          generateBtn.disabled = false;
+          generateBtnText.textContent = "Generar Video Gratis Ahora";
+        }
+      }
+
+      // Monitor listo: el usuario elige su video y su foto (o los ejemplos)
     </script>
   </body>
 </html>

@@ -3,6 +3,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { GoogleGenAI } from "@google/genai";
+import { runFreeEngine } from "./lib/free-engines.mjs";
+
+// Trabajos de generación gratuita en curso (IA real en GPU de Hugging Face)
+const jobs = new Map();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3456;
@@ -236,6 +240,53 @@ const server = http.createServer(async (req, res) => {
     } catch (err) {
       return sendJson(res, 500, { ok: false, error: String(err.message || err) });
     }
+  }
+
+  // Generación GRATUITA con IA real (Face Swap / Motion Transfer / LivePortrait)
+  if (url.pathname === "/api/generate-free" && req.method === "POST") {
+    try {
+      const body = await readJsonBody(req);
+      const { mode = "faceswap", imagePath, videoPath, prompt = "", aspectRatio = "9:16", hfToken = "" } = body;
+      const inUploads = (p) => p && path.resolve(p).startsWith(UPLOADS_DIR) && fs.existsSync(p);
+      if (!inUploads(imagePath)) return sendJson(res, 400, { ok: false, error: "Sube primero la foto del personaje (Paso 2)." });
+      if (!inUploads(videoPath)) return sendJson(res, 400, { ok: false, error: "Sube primero el video base (Paso 1)." });
+
+      const id = `job_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+      const job = { id, status: "running", logs: [], message: "Iniciando...", videoUrl: null, error: null, engine: null };
+      jobs.set(id, job);
+
+      runFreeEngine({
+        mode,
+        imagePath,
+        videoPath,
+        prompt: prompt.replace(/@\w+/g, "").trim(),
+        aspectRatio,
+        hfToken,
+        onLog: (m) => {
+          job.message = m;
+          job.logs.push(m);
+          console.log(`[${id}] ${m}`);
+        },
+      })
+        .then(({ buffer, engine }) => {
+          const outFilename = `genjutsu_${mode}_${Date.now()}.mp4`;
+          fs.writeFileSync(path.join(OUTPUTS_DIR, outFilename), buffer);
+          Object.assign(job, { status: "done", engine, videoUrl: `/outputs/${outFilename}`, message: `Listo con ${engine}` });
+        })
+        .catch((err) => {
+          Object.assign(job, { status: "error", error: String(err.message || err) });
+        });
+
+      return sendJson(res, 200, { ok: true, jobId: id });
+    } catch (err) {
+      return sendJson(res, 500, { ok: false, error: String(err.message || err) });
+    }
+  }
+
+  if (url.pathname.startsWith("/api/jobs/") && req.method === "GET") {
+    const job = jobs.get(url.pathname.split("/").pop());
+    if (!job) return sendJson(res, 404, { ok: false, error: "Trabajo no encontrado." });
+    return sendJson(res, 200, { ok: true, ...job, logs: undefined });
   }
 
   // Guardar en disco (outputs/) los videos generados gratis por el motor integrado
