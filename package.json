@@ -1,0 +1,12 @@
+{
+  "name": "genjutsu-genjutsu",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Open Genjutsu Studio — Replicación local de Motion Transfer y Objects Swap conectada a Gemini Omni 1.1 Flash & Veo 3.1 (@google/genai)",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "@google/genai": "latest"
+  }
+}

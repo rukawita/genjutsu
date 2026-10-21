@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="es" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Open Genjutsu Studio — Gemini Omni 1.1 Flash &amp; Veo 3.1</title>
+    <style>
+      :root {
+        --bg-base: #090a0f;
+        --bg-panel: #12141d;
+        --bg-elevated: #1a1d2a;
+        --border-subtle: rgba(255, 255, 255, 0.09);
+        --border-hover: rgba(255, 255, 255, 0.22);
+        --brand-lime: #d2ff28;
+        --brand-lime-dim: rgba(210, 255, 40, 0.14);
+        --text-primary: #f5f6fa;
+        --text-secondary: #9ba1b0;
+        --accent-purple: #8b5cf6;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: var(--bg-base);
+        color: var(--text-primary);
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 24px;
+        border-bottom: 1px solid var(--border-subtle);
+        background: rgba(18, 20, 29, 0.85);
+        backdrop-filter: blur(12px);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        font-size: 1.05rem;
+        letter-spacing: 0.02em;
+      }
+      .badge-lime {
+        background: var(--brand-lime);
+        color: #090a0f;
+        font-size: 0.72rem;
+        font-weight: 800;
+        padding: 3px 8px;
+        border-radius: 6px;
+        text-transform: uppercase;
+      }
+      .workspace {
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        flex: 1;
+        min-height: calc(100vh - 57px);
+      }
+      @media (max-width: 960px) {
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+      }
+      .sidebar {
+        border-right: 1px solid var(--border-subtle);
+        background: var(--bg-panel);
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        overflow-y: auto;
+      }
+      .hero-card {
+        position: relative;
+        height: 100px;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid var(--border-subtle);
+        background: radial-gradient(circle at 20% 20%, rgba(210, 255, 40, 0.22), rgba(139, 92, 246, 0.25), #090a0f);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 12px;
+      }
+      .hero-card h2 {
+        font-size: 1.2rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        color: var(--brand-lime);
+        letter-spacing: 0.04em;
+      }
+      .hero-card p {
+        font-size: 0.78rem;
+        color: var(--text-secondary);
+        margin-top: 4px;
+      }
+      .tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background: var(--bg-base);
+        padding: 4px;
+        border-radius: 12px;
+        border: 1px solid var(--border-subtle);
+      }
+      .tab-btn {
+        background: transparent;
+        color: var(--text-secondary);
+        border: none;
+        padding: 9px 12px;
+        border-radius: 9px;
+        font-size: 0.84rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .tab-btn.active {
+        background: var(--bg-elevated);
+        color: var(--text-primary);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      }
+      .dropzone {
+        border: 1.5px dashed var(--border-subtle);
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 14px;
+        padding: 14px;
+        transition: all 0.15s;
+        cursor: pointer;
+        position: relative;
+      }
+      .dropzone:hover {
+        border-color: var(--border-hover);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .dropzone-title {
+        font-size: 0.86rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .dropzone-caption {
+        font-size: 0.74rem;
+        color: var(--text-secondary);
+      }
+      .media-preview-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .media-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        cursor: pointer;
+      }
+      .media-pill:hover {
+        border-color: var(--brand-lime);
+      }
+      .media-pill code {
+        color: var(--brand-lime);
+        font-weight: 700;
+      }
+      .section-box {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border-subtle);
+        border-radius: 14px;
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .row-between {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .section-label {
+        font-size: 0.82rem;
+        font-weight: 600;
+      }
+      .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .radio-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 10px;
+        border-radius: 9px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid transparent;
+        cursor: pointer;
+        font-size: 0.8rem;
+      }
+      .radio-item.selected {
+        border-color: var(--brand-lime);
+        background: var(--brand-lime-dim);
+      }
+      textarea, input[type="text"], input[type="password"], select {
+        width: 100%;
+        background: var(--bg-base);
+        border: 1px solid var(--border-subtle);
+        color: var(--text-primary);
+        border-radius: 10px;
+        padding: 9px 12px;
+        font-size: 0.83rem;
+        font-family: inherit;
+        outline: none;
+      }
+      textarea:focus, input:focus, select:focus {
+        border-color: var(--brand-lime);
+      }
+      .controls-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .btn-generate {
+        background: var(--brand-lime);
+        color: #090a0f;
+        border: none;
+        border-radius: 12px;
+        padding: 13px 18px;
+        font-size: 0.92rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: filter 0.15s, transform 0.1s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .btn-generate:hover {
+        filter: brightness(1.08);
+      }
+      .btn-generate:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .main-panel {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        overflow-y: auto;
+      }
+      .card {
+        background: var(--bg-panel);
+        border: 1px solid var(--border-subtle);
+        border-radius: 16px;
+        padding: 20px;
+      }
+      .card h3 {
+        font-size: 0.98rem;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      pre {
+        background: #06070b;
+        border: 1px solid var(--border-subtle);
+        border-radius: 10px;
+        padding: 14px;
+        font-size: 0.77rem;
+        overflow-x: auto;
+        color: #d1d5db;
+        line-height: 1.45;
+      }
+      .btn-secondary {
+        background: var(--bg-elevated);
+        color: var(--text-primary);
+        border: 1px solid var(--border-subtle);
+        padding: 7px 12px;
+        border-radius: 8px;
+        font-size: 0.76rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .btn-secondary:hover {
+        border-color: var(--brand-lime);
+      }
+      .status-banner {
+        padding: 12px 14px;
+        border-radius: 10px;
+        font-size: 0.82rem;
+        background: rgba(139, 92, 246, 0.12);
+        border: 1px solid rgba(139, 92, 246, 0.35);
+        line-height: 1.45;
+      }
+      .video-stage {
+        width: 100%;
+        min-height: 260px;
+        background: #050609;
+        border: 1px solid var(--border-subtle);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .video-stage video {
+        max-width: 100%;
+        max-height: 460px;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <span>OPEN GENJUTSU STUDIO</span>
+        <span class="badge-lime">Gemini Omni 1.1 Flash &amp; Veo 3.1 Connected</span>
+      </div>
+      <div style="font-size: 0.8rem; color: var(--text-secondary)">
+        SDK Oficial: <code>@google/genai</code> · Interactions API &amp; Files API
+      </div>
+    </header>
+
+    <div class="workspace">
+      <aside class="sidebar">
+        <div class="hero-card">
+          <h2>Higgsfield Genjutsu</h2>
+          <p>Motor conectado: <code>gemini-omni-1.1-flash</code> / <code>veo-3.1</code></p>
+        </div>
+
+        <!-- Google AI Studio API Key -->
+        <div class="section-box">
+          <div class="row-between">
+            <label class="section-label">🔑 Gemini API Key (Google AI Studio)</label>
+            <a
+              href="https://aistudio.google.com/apikey"
+              target="_blank"
+              rel="noopener"
+              style="font-size: 0.73rem; color: var(--brand-lime); text-decoration: none"
+            >
+              Obtener API Key →
+            </a>
+          </div>
+          <input
+            type="password"
+            id="geminiApiKey"
+            placeholder="AIzaSy... (Se guarda en tu navegador local)"
+            oninput="saveApiKey(this.value)"
+          />
+          <div class="controls-grid">
+            <div>
+              <label class="section-label" style="display:block; margin-bottom:4px">Motor Gemini</label>
+              <select id="geminiEngine" onchange="updateOutputs()">
+                <option value="gemini-omni-1.1-flash" selected>Gemini Omni 1.1 Flash (Video Edit / Motion)</option>
+                <option value="veo-3.1-fast-generate-preview">Veo 3.1 Fast Preview</option>
+                <option value="veo-3.1-generate-preview">Veo 3.1 Standard Preview</option>
+              </select>
+            </div>
+            <div>
+              <label class="section-label" style="display:block; margin-bottom:4px">Duración</label>
+              <select id="durationSelect" onchange="updateOutputs()">
+                <option value="">Auto (según video)</option>
+                <option value="5">5 segundos</option>
+                <option value="8">8 segundos</option>
+                <option value="10">10 segundos</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode Selector: motion-control vs replace-objects -->
+        <div class="tabs" role="tablist">
+          <button class="tab-btn active" id="tabMotion" onclick="setMode('motion-control')">
+            Motion transfer
+          </button>
+          <button class="tab-btn" id="tabSwap" onclick="setMode('replace-objects')">
+            Objects swap
+          </button>
+        </div>
+
+        <!-- Driving Video Input -->
+        <div class="dropzone" onclick="document.getElementById('videoInput').click()">
+          <input type="file" id="videoInput" accept="video/mp4,video/webm,video/quicktime" style="display:none" onchange="handleVideoSelect(event)" />
+          <div class="dropzone-title" id="videoDropTitle">Add a reference video to extract motion</div>
+          <div class="dropzone-caption">Sube un MP4 local · Etiqueta: <code>@video1</code></div>
+          <div id="videoPreview" class="media-preview-grid"></div>
+        </div>
+
+        <!-- Reference Images Input -->
+        <div class="dropzone" onclick="document.getElementById('imageInput').click()">
+          <input type="file" id="imageInput" accept="image/jpeg,image/png,image/webp" multiple style="display:none" onchange="handleImageSelect(event)" />
+          <div class="dropzone-title">Add reference images</div>
+          <div class="dropzone-caption">Personajes, objetos o vestimenta (<code>@image1</code>, <code>@image2</code>...)</div>
+          <div id="imagePreview" class="media-preview-grid"></div>
+        </div>
+
+        <!-- Background Control (scene_mode) -->
+        <div class="section-box" id="bgControlSection">
+          <div class="row-between">
+            <span class="section-label">Background control (<code>scene_mode</code>)</span>
+            <input type="checkbox" id="bgControlToggle" onchange="toggleBgControl(this.checked)" />
+          </div>
+          <div class="radio-group" id="sceneModeGroup" style="display: none">
+            <div class="radio-item selected" data-scene="video" onclick="setSceneMode('video')">
+              <span>Motion video (Mantiene fondo de <code>@video1</code>)</span>
+              <span>✓</span>
+            </div>
+            <div class="radio-item" data-scene="character" onclick="setSceneMode('character')">
+              <span>Reference image (Usa fondo de <code>@image1</code>)</span>
+              <span></span>
+            </div>
+            <div class="radio-item" data-scene="location" onclick="setSceneMode('location')">
+              <span>Manual scene reference (Usa <code>@location</code>)</span>
+              <span></span>
+            </div>
+            <div id="locationUploadBox" style="display: none; margin-top: 6px">
+              <button class="btn-secondary" style="width:100%" onclick="document.getElementById('locationInput').click()">
+                + Subir imagen de fondo (<code>@location</code>)
+              </button>
+              <input type="file" id="locationInput" accept="image/*" style="display:none" onchange="handleLocationSelect(event)" />
+              <div id="locationPreview" class="media-preview-grid"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prompt & @mentions -->
+        <div class="section-box">
+          <div class="row-between">
+            <span class="section-label">Prompt</span>
+            <span style="font-size: 0.72rem; color: var(--text-secondary)">Clic para insertar etiqueta</span>
+          </div>
+          <div id="mentionChips" class="media-preview-grid" style="margin-top:0"></div>
+          <textarea
+            id="promptInput"
+            rows="3"
+            placeholder="Describe your new scene — e.g. 'the character from @image1 dancing on a rooftop' or 'same moves, new location: Tokyo at night'."
+            oninput="updateOutputs()"
+          ></textarea>
+        </div>
+
+        <!-- Resolution & Aspect Ratio -->
+        <div class="controls-grid">
+          <div>
+            <label class="section-label" style="display:block; margin-bottom:4px">Resolución</label>
+            <select id="resolutionSelect" onchange="updateOutputs()">
+              <option value="360p">360p (Rápido)</option>
+              <option value="720p" selected>720p (HD)</option>
+              <option value="1080p">1080p (Full HD)</option>
+              <option value="4k">4K (Ultra HD)</option>
+            </select>
+          </div>
+          <div>
+            <label class="section-label" style="display:block; margin-bottom:4px">Aspect Ratio</label>
+            <select id="aspectSelect" onchange="updateOutputs()">
+              <option value="16:9" selected>16:9 (Horizontal)</option>
+              <option value="9:16">9:16 (Vertical)</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-generate" id="generateBtn" onclick="executeGeminiGeneration()">
+          <span>⚡</span>
+          <span id="generateBtnText">Generar Video con Gemini / Veo</span>
+        </button>
+      </aside>
+
+      <!-- MAIN PANEL -->
+      <main class="main-panel">
+        <div class="status-banner" id="statusBanner">
+          <strong>Motor Gemini Omni 1.1 Flash &amp; Veo 3.1 activo:</strong> En la ingeniería inversa de Higgsfield vimos que el bundle <code>2feeef17-_aaiC1MSWYc2KRdp.js</code> utiliza <code>gemini-omni-flash-1-1</code> para edición y transferencia por referencias. Al pulsar <strong>Generar Video</strong>, nuestro servidor local sube tus archivos a la <strong>Files API</strong> de Google, traduce tus etiquetas <code>@video1</code> y <code>@image1</code> a la sintaxis oficial <code>[# Sources &lt;VIDEO_0&gt;@Video1] [# References &lt;IMAGE_REF_0&gt;@Image1]</code> de <strong>Interactions API</strong> y descarga el MP4 resultante.
+        </div>
+
+        <!-- Reproductor de Video Resultante -->
+        <div class="card">
+          <div class="row-between" style="margin-bottom: 10px">
+            <h3>🎬 Resultado de Generación</h3>
+            <span id="interactionBadge" style="font-size: 0.75rem; color: var(--brand-lime)"></span>
+          </div>
+          <div class="video-stage" id="videoStage">
+            <span style="color: var(--text-secondary); font-size: 0.85rem">
+              Sube un video/imagen de referencia, ingresa tu Gemini API Key y pulsa "Generar Video".
+            </span>
+          </div>
+        </div>
+
+        <!-- Llamada real a Gemini Omni 1.1 Flash Interactions API -->
+        <div class="card">
+          <div class="row-between" style="margin-bottom: 10px">
+            <h3>1. Traducción en Tiempo Real a <code>gemini-omni-1.1-flash</code> (Interactions API)</h3>
+            <button class="btn-secondary" onclick="copyText('omniPayloadOutput')">Copiar JSON</button>
+          </div>
+          <pre id="omniPayloadOutput"></pre>
+        </div>
+
+        <!-- Payload original reconstruido de Higgsfield Genjutsu -->
+        <div class="card">
+          <div class="row-between" style="margin-bottom: 10px">
+            <h3>2. Contrato Interno de Higgsfield Genjutsu (Reconstruido con REA)</h3>
+            <button class="btn-secondary" onclick="copyText('reaPayloadOutput')">Copiar JSON</button>
+          </div>
+          <pre id="reaPayloadOutput"></pre>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const state = {
+        mode: "motion-control",
+        bgControlEnabled: false,
+        sceneMode: "off",
+        sourceVideo: null,
+        images: [],
+        locationMedia: null,
+        lastInteractionId: null,
+      };
+
+      // Cargar API Key guardada en localStorage
+      window.addEventListener("DOMContentLoaded", async () => {
+        const savedKey = localStorage.getItem("GENJUTSU_GEMINI_API_KEY") || "";
+        if (savedKey) {
+          document.getElementById("geminiApiKey").value = savedKey;
+        }
+        try {
+          const r = await fetch("/api/health");
+          const h = await r.json();
+          if (h.hasEnvApiKey && !savedKey) {
+            document.getElementById("geminiApiKey").placeholder =
+              "Usando GEMINI_API_KEY detectada en variables de entorno";
+          }
+        } catch {}
+        renderMediaPreviews();
+        updateOutputs();
+      });
+
+      function saveApiKey(val) {
+        localStorage.setItem("GENJUTSU_GEMINI_API_KEY", val.trim());
+      }
+
+      function setMode(mode) {
+        state.mode = mode;
+        document.getElementById("tabMotion").classList.toggle("active", mode === "motion-control");
+        document.getElementById("tabSwap").classList.toggle("active", mode === "replace-objects");
+        document.getElementById("bgControlSection").style.display =
+          mode === "motion-control" ? "flex" : "none";
+        document.getElementById("videoDropTitle").textContent =
+          mode === "replace-objects"
+            ? "Add a reference video to edit"
+            : "Add a reference video to extract motion";
+        document.getElementById("promptInput").placeholder =
+          mode === "replace-objects"
+            ? "Describe what to change — e.g. 'replace the man with the cat from @image1' or 'change the location to mountains'."
+            : "Describe your new scene — e.g. 'the character from @image1 dancing on a rooftop' or 'same moves, new location: Tokyo at night'.";
+        updateOutputs();
+      }
+
+      function toggleBgControl(checked) {
+        state.bgControlEnabled = checked;
+        state.sceneMode = checked ? "video" : "off";
+        document.getElementById("sceneModeGroup").style.display = checked ? "flex" : "none";
+        renderSceneModeSelection();
+        updateOutputs();
+      }
+
+      function setSceneMode(mode) {
+        state.sceneMode = mode;
+        renderSceneModeSelection();
+        updateOutputs();
+      }
+
+      function renderSceneModeSelection() {
+        document.querySelectorAll("#sceneModeGroup .radio-item").forEach((el) => {
+          const isMatch = el.getAttribute("data-scene") === state.sceneMode;
+          el.classList.toggle("selected", isMatch);
+          el.lastElementChild.textContent = isMatch ? "✓" : "";
+        });
+        document.getElementById("locationUploadBox").style.display =
+          state.sceneMode === "location" ? "block" : "none";
+      }
+
+      async function uploadFileToLocalServer(file) {
+        const base64Data = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const res = String(reader.result || "");
+            resolve(res.includes(",") ? res.split(",")[1] : res);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        const resp = await fetch("/api/upload-local", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            filename: file.name,
+            mimeType: file.type || "application/octet-stream",
+            base64Data,
+          }),
+        });
+        const data = await resp.json();
+        if (!data.ok) throw new Error(data.error || "Error subiendo archivo");
+        return {
+          id: crypto.randomUUID(),
+          name: file.name,
+          mimeType: data.mimeType,
+          localPath: data.localPath,
+          publicUrl: data.publicUrl,
+          type: file.type.startsWith("video/") ? "video_input" : "image_job",
+        };
+      }
+
+      async function handleVideoSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const banner = document.getElementById("statusBanner");
+        banner.innerHTML = `⏳ Preparando video local <code>${file.name}</code>...`;
+        try {
+          state.sourceVideo = await uploadFileToLocalServer(file);
+          banner.innerHTML = `✅ Video <code>${file.name}</code> listo como <code>@video1</code>.`;
+          renderMediaPreviews();
+          updateOutputs();
+        } catch (err) {
+          banner.innerHTML = `❌ Error al cargar video: ${err.message}`;
+        }
+      }
+
+      async function handleImageSelect(event) {
+        const files = Array.from(event.target.files);
+        if (!files.length) return;
+        const banner = document.getElementById("statusBanner");
+        banner.innerHTML = `⏳ Cargando ${files.length} imagen(es) de referencia...`;
+        try {
+          const uploaded = [];
+          for (const f of files.slice(0, 10)) {
+            uploaded.push(await uploadFileToLocalServer(f));
+          }
+          state.images = uploaded;
+          banner.innerHTML = `✅ ${uploaded.length} imagen(es) listas (${uploaded.map((_, i) => `@image${i + 1}`).join(", ")}).`;
+          renderMediaPreviews();
+          updateOutputs();
+        } catch (err) {
+          banner.innerHTML = `❌ Error al cargar imágenes: ${err.message}`;
+        }
+      }
+
+      async function handleLocationSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        try {
+          state.locationMedia = await uploadFileToLocalServer(file);
+          renderMediaPreviews();
+          updateOutputs();
+        } catch (err) {
+          alert(err.message);
+        }
+      }
+
+      function renderMediaPreviews() {
+        const vContainer = document.getElementById("videoPreview");
+        vContainer.innerHTML = state.sourceVideo
+          ? `<span class="media-pill">🎬 <code>@video1</code> ${state.sourceVideo.name}</span>`
+          : `<span class="media-pill" style="opacity:0.6">🎬 Sin video (haz clic para subir MP4)</span>`;
+
+        const iContainer = document.getElementById("imagePreview");
+        iContainer.innerHTML = state.images.length
+          ? state.images
+              .map(
+                (img, idx) =>
+                  `<span class="media-pill">🖼️ <code>@image${idx + 1}</code> ${img.name}</span>`,
+              )
+              .join("")
+          : `<span class="media-pill" style="opacity:0.6">🖼️ Sin imágenes (haz clic para subir PNG/JPG)</span>`;
+
+        const locContainer = document.getElementById("locationPreview");
+        if (locContainer) {
+          locContainer.innerHTML = state.locationMedia
+            ? `<span class="media-pill">🏞️ <code>@location</code> ${state.locationMedia.name}</span>`
+            : "";
+        }
+
+        const chips = document.getElementById("mentionChips");
+        const list = [`<span class="media-pill" onclick="insertMention('@video1')"><code>@video1</code> Video</span>`];
+        const count = Math.max(1, state.images.length);
+        for (let i = 0; i < count; i++) {
+          list.push(
+            `<span class="media-pill" onclick="insertMention('@image${i + 1}')"><code>@image${i + 1}</code> Ref ${i + 1}</span>`,
+          );
+        }
+        if (state.sceneMode === "location") {
+          list.push(
+            `<span class="media-pill" onclick="insertMention('@location')"><code>@location</code> Fondo</span>`,
+          );
+        }
+        chips.innerHTML = list.join("");
+      }
+
+      function insertMention(tag) {
+        const input = document.getElementById("promptInput");
+        const start = input.selectionStart || input.value.length;
+        const before = input.value.slice(0, start);
+        const after = input.value.slice(start);
+        input.value = `${before}${before && !before.endsWith(" ") ? " " : ""}${tag} ${after}`;
+        input.focus();
+        updateOutputs();
+      }
+
+      function buildOmniPreview() {
+        const engine = document.getElementById("geminiEngine").value;
+        const resolution = document.getElementById("resolutionSelect").value;
+        const aspectRatio = document.getElementById("aspectSelect").value;
+        const duration = document.getElementById("durationSelect").value;
+        const rawPrompt = document.getElementById("promptInput").value.trim();
+
+        const imgs = state.images.length
+          ? state.images
+          : [{ name: "character_ref_1.png", mimeType: "image/png" }];
+        const vid = state.sourceVideo || { name: "driving_video.mp4", mimeType: "video/mp4" };
+
+        const refTags = imgs.map((_, i) => `<IMAGE_REF_${i}>@Image${i + 1}`);
+        if (state.sceneMode === "location") {
+          refTags.push(`<IMAGE_REF_${imgs.length}>@Image${imgs.length + 1}`);
+        }
+
+        let translated = rawPrompt || (state.mode === "replace-objects"
+          ? "Replace the main subject in @video1 with @image1"
+          : "The character from @image1 performing the motion in @video1");
+
+        imgs.forEach((_, idx) => {
+          translated = translated.replace(new RegExp(`@image${idx + 1}\\b`, "gi"), `<IMAGE_REF_${idx}>`);
+        });
+        if (state.sceneMode === "location") {
+          translated = translated.replace(/@location\b/gi, `<IMAGE_REF_${imgs.length}>`);
+        }
+
+        let finalPrompt = "";
+        if (state.mode === "replace-objects") {
+          translated = translated.replace(/@video1\b/gi, "<VIDEO_0>");
+          finalPrompt = `[# Sources <VIDEO_0>@Video1] [# References ${refTags.join(" ")}] ${translated}. Keep everything else the same.`;
+        } else {
+          translated = translated.replace(/@video1\b/gi, "<VIDEO_REF_0>");
+          finalPrompt = `[# References ${refTags.join(" ")} <VIDEO_REF_0>@Video1] ${translated}. Use the given image(s) as references for video generation and transfer the motion from <VIDEO_REF_0>.`;
+        }
+
+        return {
+          sdk: "@google/genai",
+          method: engine === "gemini-omni-1.1-flash" ? "ai.interactions.create" : "ai.models.generateVideos",
+          request: {
+            model: engine,
+            input: [
+              ...imgs.map((img, i) => ({
+                type: "image",
+                uri: `https://generativelanguage.googleapis.com/files/img_ref_${i + 1}`,
+                mime_type: img.mimeType || "image/png",
+              })),
+              {
+                type: "video",
+                uri: "https://generativelanguage.googleapis.com/files/video_source_1",
+                mime_type: vid.mimeType || "video/mp4",
+              },
+              {
+                type: "text",
+                text: finalPrompt,
+              },
+            ],
+            response_format: {
+              type: "video",
+              delivery: "uri",
+              aspect_ratio: aspectRatio,
+              resolution,
+              ...(duration ? { duration: `${duration}s` } : {}),
+            },
+          },
+        };
+      }
+
+      function buildReaReconstructedPayload() {
+        const resolution = document.getElementById("resolutionSelect").value;
+        const aspectRatio = document.getElementById("aspectSelect").value;
+        const promptText = document.getElementById("promptInput").value.trim() || null;
+        const vidId = state.sourceVideo?.id || "b70f42d0-811c-4c3f-9d12-0001video";
+        const imgs = state.images.length
+          ? state.images
+          : [{ id: "a19c33e1-442b-4a11-8b20-0001image", type: "image_job" }];
+
+        const jobType =
+          state.mode === "replace-objects"
+            ? "hf_mult_replace_object"
+            : "hf_mult_motion_control";
+
+        return {
+          endpoint: `POST https://fnf.higgsfield.ai/jobs/v2/${jobType}`,
+          payload: {
+            params: {
+              resolution,
+              batch_size: 1,
+              medias: [
+                ...imgs.map((img) => ({
+                  role: "image",
+                  data: { id: img.id, type: img.type || "image_job" },
+                })),
+                ...(state.sceneMode === "location" && state.locationMedia
+                  ? [
+                      {
+                        role: "location",
+                        data: { id: state.locationMedia.id, type: "image_job" },
+                      },
+                    ]
+                  : []),
+                {
+                  role: "video",
+                  data: { id: vidId, type: "video_input" },
+                },
+              ],
+              prompt: promptText,
+              aspect_ratio: aspectRatio,
+              ...(state.sceneMode !== "off" && state.sceneMode !== "video"
+                ? { scene_mode: state.sceneMode }
+                : {}),
+              location_character_media_id:
+                state.sceneMode === "character" ? imgs[0].id : null,
+              folder_id: null,
+            },
+            use_unlim: false,
+            use_free_gens: false,
+            client_meta: { is_free_generation: false },
+          },
+        };
+      }
+
+      function updateOutputs() {
+        document.getElementById("omniPayloadOutput").textContent = JSON.stringify(
+          buildOmniPreview(),
+          null,
+          2,
+        );
+        document.getElementById("reaPayloadOutput").textContent = JSON.stringify(
+          buildReaReconstructedPayload(),
+          null,
+          2,
+        );
+      }
+
+      function copyText(id) {
+        const text = document.getElementById(id).textContent;
+        navigator.clipboard.writeText(text);
+        document.getElementById("statusBanner").innerHTML =
+          "<strong>✅ JSON copiado al portapapeles.</strong>";
+      }
+
+      async function executeGeminiGeneration() {
+        const btn = document.getElementById("generateBtn");
+        const btnText = document.getElementById("generateBtnText");
+        const banner = document.getElementById("statusBanner");
+        const apiKey = document.getElementById("geminiApiKey").value.trim();
+        const engine = document.getElementById("geminiEngine").value;
+        const resolution = document.getElementById("resolutionSelect").value;
+        const aspectRatio = document.getElementById("aspectSelect").value;
+        const duration = document.getElementById("durationSelect").value || null;
+        const prompt = document.getElementById("promptInput").value;
+
+        btn.disabled = true;
+        btnText.textContent = "Procesando en Gemini API...";
+        banner.innerHTML = `⏳ Subiendo archivos a Google Files API y ejecutando <code>${engine}</code>... (Esto puede tardar entre 30s y 2 minutos según la resolución).`;
+
+        try {
+          const resp = await fetch("/api/generate-gemini", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              apiKey,
+              engine,
+              mode: state.mode,
+              sceneMode: state.sceneMode,
+              prompt,
+              resolution,
+              aspectRatio,
+              duration,
+              sourceVideo: state.sourceVideo,
+              images: state.images,
+              locationMedia: state.locationMedia,
+            }),
+          });
+          const data = await resp.json();
+          if (!data.ok) {
+            throw new Error(data.error || "Error desconocido en la generación");
+          }
+
+          state.lastInteractionId = data.interactionId || null;
+          if (data.interactionId) {
+            document.getElementById("interactionBadge").textContent =
+              `Interaction ID: ${data.interactionId}`;
+          }
+
+          banner.innerHTML = `✅ <strong>¡Video generado con éxito usando ${data.engine}!</strong> Guardado en <code>${data.outputPath}</code>`;
+          document.getElementById("videoStage").innerHTML = `
+            <video src="${data.videoUrl}" controls autoplay loop playsinline></video>
+          `;
+        } catch (err) {
+          banner.innerHTML = `❌ <strong>Error:</strong> ${err.message}`;
+        } finally {
+          btn.disabled = false;
+          btnText.textContent = "Generar Video con Gemini / Veo";
+        }
+      }
+    </script>
+  </body>
+</html>
