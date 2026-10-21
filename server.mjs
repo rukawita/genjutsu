@@ -238,6 +238,31 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  // Guardar en disco (outputs/) los videos generados gratis por el motor integrado
+  if (url.pathname === "/api/save-rendered-video" && req.method === "POST") {
+    try {
+      const body = await readJsonBody(req);
+      const { base64Data, ext = "webm" } = body;
+      if (!base64Data) {
+        return sendJson(res, 400, { ok: false, error: "No se recibieron datos de video." });
+      }
+      const cleanExt = ext === "mp4" ? "mp4" : "webm";
+      const outFilename = `genjutsu_free_${Date.now()}.${cleanExt}`;
+      const outPath = path.join(OUTPUTS_DIR, outFilename);
+      const buffer = Buffer.from(base64Data, "base64");
+      fs.writeFileSync(outPath, buffer);
+      return sendJson(res, 200, {
+        ok: true,
+        videoUrl: `/outputs/${outFilename}`,
+        outputPath: outPath,
+        filename: outFilename,
+        bytes: buffer.byteLength,
+      });
+    } catch (err) {
+      return sendJson(res, 500, { ok: false, error: String(err.message || err) });
+    }
+  }
+
   // Generación real con Gemini Omni 1.1 Flash (Interactions API) o Veo 3.1
   if (url.pathname === "/api/generate-gemini" && req.method === "POST") {
     try {

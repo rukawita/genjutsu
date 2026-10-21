@@ -1,878 +1,1869 @@
 <!doctype html>
-<html lang="es" class="dark">
+<html lang="es" style="color-scheme: dark;">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Open Genjutsu Studio — Gemini Omni 1.1 Flash &amp; Veo 3.1</title>
+    <title>Genjutsu Studio — Generador de Video IA Gratis</title>
     <style>
       :root {
-        --bg-base: #090a0f;
-        --bg-panel: #12141d;
-        --bg-elevated: #1a1d2a;
-        --border-subtle: rgba(255, 255, 255, 0.09);
-        --border-hover: rgba(255, 255, 255, 0.22);
-        --brand-lime: #d2ff28;
-        --brand-lime-dim: rgba(210, 255, 40, 0.14);
-        --text-primary: #f5f6fa;
-        --text-secondary: #9ba1b0;
-        --accent-purple: #8b5cf6;
+        --bg: #08090d;
+        --panel: #11131c;
+        --panel-elevated: #171a26;
+        --panel-hover: #1e2233;
+        --border: #262b3d;
+        --text: #f3f5fa;
+        --muted: #9aa3b8;
+        --accent: #d2ff28;
+        --accent-dim: rgba(210, 255, 40, 0.14);
+        --video-color: #38bdf8;
+        --video-dim: rgba(56, 189, 248, 0.14);
+        --image-color: #c084fc;
+        --image-dim: rgba(192, 132, 252, 0.14);
+        --danger: #fb7185;
+        --success: #34d399;
+        --radius-lg: 18px;
+        --radius-md: 12px;
       }
+
       * {
         box-sizing: border-box;
-        margin: 0;
-        padding: 0;
       }
+
       body {
-        background: var(--bg-base);
-        color: var(--text-primary);
-        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        margin: 0;
+        background: radial-gradient(circle at 15% 0%, #15192b 0%, var(--bg) 55%);
+        color: var(--text);
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         min-height: 100vh;
-        display: flex;
-        flex-direction: column;
+        line-height: 1.45;
       }
+
+      /* Canonical visually-hidden utility for accessible custom file inputs */
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+        border: 0;
+      }
+
       header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 14px 24px;
-        border-bottom: 1px solid var(--border-subtle);
-        background: rgba(18, 20, 29, 0.85);
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 16px 28px;
+        border-bottom: 1px solid var(--border);
+        background: rgba(11, 13, 20, 0.88);
         backdrop-filter: blur(12px);
+        position: sticky;
+        top: 0;
+        z-index: 30;
       }
+
       .brand {
         display: flex;
         align-items: center;
         gap: 12px;
-        font-weight: 800;
-        font-size: 1.05rem;
-        letter-spacing: 0.02em;
       }
-      .badge-lime {
-        background: var(--brand-lime);
-        color: #090a0f;
-        font-size: 0.72rem;
-        font-weight: 800;
-        padding: 3px 8px;
-        border-radius: 6px;
-        text-transform: uppercase;
-      }
-      .workspace {
+
+      .brand-logo {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, var(--accent), #22d3ee);
+        color: #06080c;
         display: grid;
-        grid-template-columns: 420px 1fr;
-        flex: 1;
-        min-height: calc(100vh - 57px);
+        place-items: center;
+        font-weight: 900;
+        font-size: 1.15rem;
+        box-shadow: 0 0 24px rgba(210, 255, 40, 0.3);
       }
-      @media (max-width: 960px) {
+
+      .brand-title {
+        font-weight: 800;
+        font-size: 1.15rem;
+        letter-spacing: -0.02em;
+      }
+
+      .brand-subtitle {
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+
+      .free-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 14px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        background: rgba(52, 211, 153, 0.14);
+        color: var(--success);
+        border: 1px solid rgba(52, 211, 153, 0.35);
+      }
+
+      .workspace {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 24px;
+        display: grid;
+        grid-template-columns: 1.12fr 0.88fr;
+        gap: 26px;
+        align-items: start;
+      }
+
+      @media (max-width: 1080px) {
         .workspace {
           grid-template-columns: 1fr;
         }
       }
-      .sidebar {
-        border-right: 1px solid var(--border-subtle);
-        background: var(--bg-panel);
-        padding: 18px;
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        overflow-y: auto;
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
       }
-      .hero-card {
-        position: relative;
-        height: 100px;
-        border-radius: 16px;
-        overflow: hidden;
-        border: 1px solid var(--border-subtle);
-        background: radial-gradient(circle at 20% 20%, rgba(210, 255, 40, 0.22), rgba(139, 92, 246, 0.25), #090a0f);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 12px;
-      }
-      .hero-card h2 {
-        font-size: 1.2rem;
-        font-weight: 900;
-        text-transform: uppercase;
-        color: var(--brand-lime);
-        letter-spacing: 0.04em;
-      }
-      .hero-card p {
-        font-size: 0.78rem;
-        color: var(--text-secondary);
-        margin-top: 4px;
-      }
-      .tabs {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        background: var(--bg-base);
-        padding: 4px;
-        border-radius: 12px;
-        border: 1px solid var(--border-subtle);
-      }
-      .tab-btn {
-        background: transparent;
-        color: var(--text-secondary);
-        border: none;
-        padding: 9px 12px;
-        border-radius: 9px;
-        font-size: 0.84rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.15s;
-      }
-      .tab-btn.active {
-        background: var(--bg-elevated);
-        color: var(--text-primary);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-      }
-      .dropzone {
-        border: 1.5px dashed var(--border-subtle);
-        background: rgba(255, 255, 255, 0.02);
-        border-radius: 14px;
-        padding: 14px;
-        transition: all 0.15s;
-        cursor: pointer;
-        position: relative;
-      }
-      .dropzone:hover {
-        border-color: var(--border-hover);
-        background: rgba(255, 255, 255, 0.04);
-      }
-      .dropzone-title {
-        font-size: 0.86rem;
-        font-weight: 600;
-        margin-bottom: 4px;
-      }
-      .dropzone-caption {
-        font-size: 0.74rem;
-        color: var(--text-secondary);
-      }
-      .media-preview-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 10px;
-      }
-      .media-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: var(--bg-elevated);
-        border: 1px solid var(--border-subtle);
-        padding: 4px 10px;
-        border-radius: 8px;
-        font-size: 0.75rem;
-        cursor: pointer;
-      }
-      .media-pill:hover {
-        border-color: var(--brand-lime);
-      }
-      .media-pill code {
-        color: var(--brand-lime);
-        font-weight: 700;
-      }
-      .section-box {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid var(--border-subtle);
-        border-radius: 14px;
-        padding: 14px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      .row-between {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .section-label {
-        font-size: 0.82rem;
-        font-weight: 600;
-      }
-      .radio-group {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-      .radio-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 8px 10px;
-        border-radius: 9px;
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid transparent;
-        cursor: pointer;
-        font-size: 0.8rem;
-      }
-      .radio-item.selected {
-        border-color: var(--brand-lime);
-        background: var(--brand-lime-dim);
-      }
-      textarea, input[type="text"], input[type="password"], select {
-        width: 100%;
-        background: var(--bg-base);
-        border: 1px solid var(--border-subtle);
-        color: var(--text-primary);
-        border-radius: 10px;
-        padding: 9px 12px;
-        font-size: 0.83rem;
-        font-family: inherit;
-        outline: none;
-      }
-      textarea:focus, input:focus, select:focus {
-        border-color: var(--brand-lime);
-      }
-      .controls-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-      }
-      .btn-generate {
-        background: var(--brand-lime);
-        color: #090a0f;
-        border: none;
-        border-radius: 12px;
-        padding: 13px 18px;
-        font-size: 0.92rem;
-        font-weight: 800;
-        cursor: pointer;
-        transition: filter 0.15s, transform 0.1s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-      }
-      .btn-generate:hover {
-        filter: brightness(1.08);
-      }
-      .btn-generate:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-      .main-panel {
-        padding: 24px;
+
+      .section-stack {
         display: flex;
         flex-direction: column;
         gap: 20px;
-        overflow-y: auto;
       }
-      .card {
-        background: var(--bg-panel);
-        border: 1px solid var(--border-subtle);
-        border-radius: 16px;
-        padding: 20px;
+
+      fieldset {
+        border: 0;
+        margin: 0;
+        padding: 0;
+        min-width: 0;
       }
-      .card h3 {
-        font-size: 0.98rem;
-        margin-bottom: 10px;
+
+      legend {
+        font-size: 0.85rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+        margin-bottom: 12px;
+        padding: 0;
         display: flex;
         align-items: center;
         gap: 8px;
       }
-      pre {
-        background: #06070b;
-        border: 1px solid var(--border-subtle);
-        border-radius: 10px;
-        padding: 14px;
-        font-size: 0.77rem;
-        overflow-x: auto;
-        color: #d1d5db;
-        line-height: 1.45;
+
+      /* Radio Cards for Mode Selection */
+      .mode-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
       }
-      .btn-secondary {
-        background: var(--bg-elevated);
-        color: var(--text-primary);
-        border: 1px solid var(--border-subtle);
-        padding: 7px 12px;
+
+      .radio-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 14px 16px;
+        border-radius: var(--radius-md);
+        background: var(--panel-elevated);
+        border: 2px solid var(--border);
+        cursor: pointer;
+        transition: all 0.18s ease;
+      }
+
+      .radio-card:hover {
+        background: var(--panel-hover);
+      }
+
+      .radio-card input[type="radio"] {
+        accent-color: var(--accent);
+        width: 16px;
+        height: 16px;
+        margin: 0;
+      }
+
+      .radio-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 800;
+        font-size: 0.96rem;
+      }
+
+      .radio-card-desc {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      .radio-card:has(input:checked) {
+        border-color: var(--accent);
+        background: var(--accent-dim);
+        box-shadow: 0 0 0 1px var(--accent);
+      }
+
+      /* Step 1 & Step 2 Upload Cards */
+      .uploads-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      @media (max-width: 680px) {
+        .uploads-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .upload-step-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-radius: var(--radius-lg);
+        padding: 18px;
+        background: var(--panel-elevated);
+        border: 2px dashed var(--border);
+        transition: all 0.2s ease;
+        min-height: 295px;
+      }
+
+      .upload-step-card.video-card {
+        border-color: rgba(56, 189, 248, 0.42);
+        background: linear-gradient(180deg, rgba(56, 189, 248, 0.06) 0%, var(--panel-elevated) 100%);
+      }
+
+      .upload-step-card.video-card.dragover {
+        border-color: var(--video-color);
+        background: rgba(56, 189, 248, 0.15);
+      }
+
+      .upload-step-card.image-card {
+        border-color: rgba(192, 132, 252, 0.42);
+        background: linear-gradient(180deg, rgba(192, 132, 252, 0.06) 0%, var(--panel-elevated) 100%);
+      }
+
+      .upload-step-card.image-card.dragover {
+        border-color: var(--image-color);
+        background: rgba(192, 132, 252, 0.15);
+      }
+
+      .step-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .step-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.74rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .step-badge.video {
+        background: var(--video-dim);
+        color: var(--video-color);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+      }
+
+      .step-badge.image {
+        background: var(--image-dim);
+        color: var(--image-color);
+        border: 1px solid rgba(192, 132, 252, 0.35);
+      }
+
+      .format-tag {
+        font-size: 0.72rem;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .step-title {
+        font-size: 1.04rem;
+        font-weight: 800;
+        margin: 0 0 4px 0;
+      }
+
+      .step-help {
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin: 0 0 14px 0;
+      }
+
+      .drop-trigger-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 10px;
+        padding: 18px 14px;
+        border-radius: var(--radius-md);
+        background: rgba(8, 9, 13, 0.55);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        transition: all 0.18s ease;
+        min-height: 135px;
+      }
+
+      .drop-trigger-label:hover {
+        border-color: var(--accent);
+        transform: translateY(-1px);
+      }
+
+      .upload-step-card:has(.visually-hidden:focus-visible) {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .big-icon-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+      }
+
+      .big-icon-circle.video {
+        background: var(--video-dim);
+        color: var(--video-color);
+      }
+
+      .big-icon-circle.image {
+        background: var(--image-dim);
+        color: var(--image-color);
+      }
+
+      .cta-upload-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border-radius: 9px;
+        font-weight: 700;
+        font-size: 0.82rem;
+      }
+
+      .cta-upload-btn.video {
+        background: var(--video-color);
+        color: #04121d;
+      }
+
+      .cta-upload-btn.image {
+        background: var(--image-color);
+        color: #190726;
+      }
+
+      /* Media Previews inside Step Cards */
+      .media-preview-box {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        background: #07080c;
+        border-radius: var(--radius-md);
+        padding: 10px;
+        border: 1px solid var(--border);
+      }
+
+      .media-preview-box.active {
+        display: flex;
+      }
+
+      .video-mini-player {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
         border-radius: 8px;
-        font-size: 0.76rem;
+        background: #000;
+      }
+
+      .image-thumbs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+        gap: 8px;
+      }
+
+      .thumb-item {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        aspect-ratio: 1 / 1;
+        background: #000;
+      }
+
+      .thumb-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .thumb-badge {
+        position: absolute;
+        bottom: 4px;
+        left: 4px;
+        background: rgba(0, 0, 0, 0.82);
+        color: var(--accent);
+        font-size: 0.68rem;
+        font-weight: 800;
+        padding: 2px 6px;
+        border-radius: 5px;
+      }
+
+      .thumb-remove-btn {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 0;
+        background: rgba(251, 113, 133, 0.92);
+        color: #fff;
+        font-weight: 900;
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        font-size: 0.75rem;
+      }
+
+      .preview-actions-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 0.78rem;
+      }
+
+      .preset-bar {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .preset-bar-label {
+        font-size: 0.74rem;
+        color: var(--muted);
+        margin-right: 4px;
+      }
+
+      .mini-btn {
+        background: var(--panel);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 5px 10px;
+        font-size: 0.75rem;
         font-weight: 600;
         cursor: pointer;
+        transition: all 0.15s ease;
       }
-      .btn-secondary:hover {
-        border-color: var(--brand-lime);
+
+      .mini-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
       }
-      .status-banner {
-        padding: 12px 14px;
+
+      .mini-btn.danger:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+
+      /* Visual Style Cards */
+      .style-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+
+      @media (max-width: 640px) {
+        .style-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      .style-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
         border-radius: 10px;
+        background: var(--panel-elevated);
+        border: 1px solid var(--border);
+        cursor: pointer;
         font-size: 0.82rem;
-        background: rgba(139, 92, 246, 0.12);
-        border: 1px solid rgba(139, 92, 246, 0.35);
-        line-height: 1.45;
+        font-weight: 700;
+        transition: all 0.15s ease;
       }
-      .video-stage {
+
+      .style-option:hover {
+        background: var(--panel-hover);
+      }
+
+      .style-option input[type="radio"] {
+        accent-color: var(--accent);
+        margin: 0;
+      }
+
+      .style-option:has(input:checked) {
+        border-color: var(--accent);
+        background: var(--accent-dim);
+        color: var(--accent);
+      }
+
+      /* Scene / Background Control */
+      .scene-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+
+      @media (max-width: 640px) {
+        .scene-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      .location-drawer {
+        display: none;
+        margin-top: 12px;
+        padding: 12px;
+        border-radius: var(--radius-md);
+        background: var(--panel-elevated);
+        border: 1px dashed var(--accent);
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .location-drawer.active {
+        display: flex;
+      }
+
+      /* Prompt input */
+      .prompt-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .prompt-label {
+        font-size: 0.85rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+      }
+
+      .chip-group {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .mention-chip {
+        background: var(--panel-elevated);
+        color: var(--accent);
+        border: 1px solid rgba(210, 255, 40, 0.35);
+        border-radius: 7px;
+        padding: 4px 9px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .mention-chip:hover {
+        background: var(--accent-dim);
+      }
+
+      textarea {
         width: 100%;
-        min-height: 260px;
-        background: #050609;
-        border: 1px solid var(--border-subtle);
-        border-radius: 12px;
+        min-height: 82px;
+        background: var(--panel-elevated);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        color: var(--text);
+        padding: 12px 14px;
+        font-size: 0.92rem;
+        font-family: inherit;
+        resize: vertical;
+      }
+
+      textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .generate-cta {
+        width: 100%;
+        padding: 16px 22px;
+        border-radius: 14px;
+        border: 0;
+        background: linear-gradient(135deg, var(--accent) 0%, #7ef244 100%);
+        color: #06090e;
+        font-size: 1.05rem;
+        font-weight: 900;
+        letter-spacing: 0.01em;
+        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        overflow: hidden;
+        gap: 10px;
+        box-shadow: 0 10px 28px rgba(210, 255, 40, 0.25);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
       }
-      .video-stage video {
-        max-width: 100%;
-        max-height: 460px;
-        border-radius: 10px;
+
+      .generate-cta:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 34px rgba(210, 255, 40, 0.38);
+      }
+
+      .generate-cta:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+
+      /* Right Column: Cinema Stage & Player */
+      .stage-card {
+        position: sticky;
+        top: 86px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .stage-top-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .stage-title {
+        font-weight: 800;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .aspect-pills {
+        display: flex;
+        gap: 6px;
+      }
+
+      .viewport-frame {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: #040508;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        display: grid;
+        place-items: center;
+      }
+
+      .viewport-frame.vertical {
+        aspect-ratio: 9 / 16;
+        max-height: 540px;
+        margin: 0 auto;
+      }
+
+      #synthCanvas {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      #resultVideo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #000;
+        display: none;
+      }
+
+      #resultVideo.active {
+        display: block;
+      }
+
+      .progress-banner {
+        display: none;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 14px;
+        border-radius: var(--radius-md);
+        background: var(--panel-elevated);
+        border: 1px solid var(--border);
+      }
+
+      .progress-banner.active {
+        display: flex;
+      }
+
+      .progress-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      progress {
+        width: 100%;
+        height: 10px;
+        border-radius: 999px;
+        overflow: hidden;
+        accent-color: var(--accent);
+      }
+
+      .download-bar {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: var(--radius-md);
+        background: rgba(52, 211, 153, 0.1);
+        border: 1px solid rgba(52, 211, 153, 0.35);
+      }
+
+      .download-bar.active {
+        display: flex;
+      }
+
+      .download-link-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        border-radius: 9px;
+        background: var(--success);
+        color: #041810;
+        font-weight: 800;
+        font-size: 0.85rem;
+        text-decoration: none;
+      }
+
+      /* Optional Cloud Drawer */
+      details.cloud-drawer {
+        background: var(--panel-elevated);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 12px 16px;
+      }
+
+      details.cloud-drawer summary {
+        cursor: pointer;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      .cloud-grid {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      @media (max-width: 640px) {
+        .cloud-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .input-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .input-field label {
+        font-size: 0.75rem;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .input-field input,
+      .input-field select {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        padding: 8px 10px;
+        font-size: 0.84rem;
       }
     </style>
   </head>
   <body>
     <header>
       <div class="brand">
-        <span>OPEN GENJUTSU STUDIO</span>
-        <span class="badge-lime">Gemini Omni 1.1 Flash &amp; Veo 3.1 Connected</span>
+        <div class="brand-logo" aria-hidden="true">G</div>
+        <div>
+          <div class="brand-title">Genjutsu Studio</div>
+          <div class="brand-subtitle">Motion Transfer &amp; Objects Swap · Interfaz Visual</div>
+        </div>
       </div>
-      <div style="font-size: 0.8rem; color: var(--text-secondary)">
-        SDK Oficial: <code>@google/genai</code> · Interactions API &amp; Files API
+      <div class="free-pill">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path d="M20 6 9 17l-5-5" />
+        </svg>
+        <span>Motor Gratuito Activado (Sin Token ni API Key)</span>
       </div>
     </header>
 
-    <div class="workspace">
-      <aside class="sidebar">
-        <div class="hero-card">
-          <h2>Higgsfield Genjutsu</h2>
-          <p>Motor conectado: <code>gemini-omni-1.1-flash</code> / <code>veo-3.1</code></p>
+    <main class="workspace">
+      <!-- COLUMNA IZQUIERDA: CONTROLES VISUALES PASO A PASO -->
+      <form id="studioForm" class="section-stack" novalidate>
+        <!-- 1. MODO DE TRABAJO -->
+        <div class="card">
+          <fieldset>
+            <legend>1. ¿Qué quieres hacer hoy?</legend>
+            <div class="mode-grid">
+              <label class="radio-card" for="modeMotion">
+                <div class="radio-card-header">
+                  <span>Motion Transfer</span>
+                  <input type="radio" id="modeMotion" name="mode" value="motion-control" checked />
+                </div>
+                <div class="radio-card-desc">
+                  Tu personaje (<strong>Imagen</strong>) imita el movimiento y cámara de tu <strong>Video</strong>.
+                </div>
+              </label>
+
+              <label class="radio-card" for="modeReplace">
+                <div class="radio-card-header">
+                  <span>Objects Swap</span>
+                  <input type="radio" id="modeReplace" name="mode" value="replace-objects" />
+                </div>
+                <div class="radio-card-desc">
+                  Integra o reemplaza al sujeto dentro de tu <strong>Video</strong> usando tu <strong>Imagen</strong>.
+                </div>
+              </label>
+            </div>
+          </fieldset>
         </div>
 
-        <!-- Google AI Studio API Key -->
-        <div class="section-box">
-          <div class="row-between">
-            <label class="section-label">🔑 Gemini API Key (Google AI Studio)</label>
-            <a
-              href="https://aistudio.google.com/apikey"
-              target="_blank"
-              rel="noopener"
-              style="font-size: 0.73rem; color: var(--brand-lime); text-decoration: none"
-            >
-              Obtener API Key →
+        <!-- 2. TARJETAS VISUALES DE SUBIDA: VIDEO vs IMAGEN -->
+        <div class="uploads-grid">
+          <!-- TARJETA A: VIDEO BASE -->
+          <div class="upload-step-card video-card" id="videoDropCard">
+            <div>
+              <div class="step-header">
+                <span class="step-badge video">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                    <rect x="2" y="4" width="15" height="16" rx="3" />
+                    <path d="m17 9 5-3v12l-5-3Z" />
+                  </svg>
+                  Paso 1 · Video Base
+                </span>
+                <span class="format-tag">MP4 · WEBM · MOV</span>
+              </div>
+              <h2 class="step-title">Sube el Video de Movimiento</h2>
+              <p class="step-help">
+                Este video guía la cámara y la acción (<strong>@video1</strong>). Si no tienes uno, usa el demo.
+              </p>
+
+              <input
+                type="file"
+                id="videoFileInput"
+                class="visually-hidden"
+                accept="video/mp4,video/webm,video/quicktime,video/*"
+              />
+
+              <label for="videoFileInput" class="drop-trigger-label" id="videoEmptyLabel">
+                <div class="big-icon-circle video" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                </div>
+                <div>
+                  <span class="cta-upload-btn video">Elegir archivo de Video</span>
+                </div>
+                <span style="font-size: 0.75rem; color: var(--muted);">o arrastra tu video aquí</span>
+              </label>
+
+              <!-- Vista previa del video subido -->
+              <div class="media-preview-box" id="videoPreviewBox">
+                <video
+                  id="uploadedVideoPreview"
+                  class="video-mini-player"
+                  width="320"
+                  height="180"
+                  muted
+                  loop
+                  playsinline
+                  controls
+                ></video>
+                <div class="preview-actions-row">
+                  <span id="videoFilenameLabel" style="color: var(--video-color); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">@video1</span>
+                  <div style="display: flex; gap: 6px;">
+                    <label for="videoFileInput" class="mini-btn" style="cursor: pointer;">Cambiar</label>
+                    <button type="button" class="mini-btn danger" id="clearVideoBtn">Quitar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="preset-bar">
+              <span class="preset-bar-label">¿Sin video a mano?</span>
+              <button type="button" class="mini-btn" id="loadDemoVideoActionBtn">
+                🎬 Cargar Video Demo (Cámara Acción)
+              </button>
+            </div>
+          </div>
+
+          <!-- TARJETA B: IMAGEN DE PERSONAJE U OBJETO -->
+          <div class="upload-step-card image-card" id="imageDropCard">
+            <div>
+              <div class="step-header">
+                <span class="step-badge image">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="3" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <path d="m21 15-5-5L5 21" />
+                  </svg>
+                  Paso 2 · Tu Personaje / Foto
+                </span>
+                <span class="format-tag">PNG · JPG · WEBP</span>
+              </div>
+              <h2 class="step-title">Sube la Imagen del Personaje</h2>
+              <p class="step-help">
+                La foto del personaje u objeto que cobrará vida (<strong>@image1</strong>).
+              </p>
+
+              <input
+                type="file"
+                id="imageFileInput"
+                class="visually-hidden"
+                accept="image/png,image/jpeg,image/webp,image/*"
+                multiple
+              />
+
+              <label for="imageFileInput" class="drop-trigger-label" id="imageEmptyLabel">
+                <div class="big-icon-circle image" aria-hidden="true">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
+                <div>
+                  <span class="cta-upload-btn image">Elegir Foto o Imagen</span>
+                </div>
+                <span style="font-size: 0.75rem; color: var(--muted);">o arrastra tu imagen aquí</span>
+              </label>
+
+              <!-- Vista previa de imágenes subidas -->
+              <div class="media-preview-box" id="imagePreviewBox">
+                <div class="image-thumbs-grid" id="imageThumbsGrid"></div>
+                <div class="preview-actions-row">
+                  <span id="imageCountLabel" style="color: var(--image-color); font-weight: 700;">1 imagen lista</span>
+                  <div style="display: flex; gap: 6px;">
+                    <label for="imageFileInput" class="mini-btn" style="cursor: pointer;">+ Añadir otra</label>
+                    <button type="button" class="mini-btn danger" id="clearImagesBtn">Limpiar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="preset-bar">
+              <span class="preset-bar-label">Personajes Demo:</span>
+              <button type="button" class="mini-btn" data-demo-char="samurai">⚔️ Samurái Neón</button>
+              <button type="button" class="mini-btn" data-demo-char="ninja">🔥 Ninja Genjutsu</button>
+              <button type="button" class="mini-btn" data-demo-char="mecha">🤖 Mecha Cyber</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. ESTILO VISUAL & CONTROL DE ESCENARIO -->
+        <div class="card section-stack">
+          <fieldset>
+            <legend>3. Estilo Visual y Efectos</legend>
+            <div class="style-grid">
+              <label class="style-option" for="styleCinematic">
+                <input type="radio" id="styleCinematic" name="visualStyle" value="cinematic" checked />
+                <span>🎬 Cine 35mm</span>
+              </label>
+              <label class="style-option" for="styleGenjutsu">
+                <input type="radio" id="styleGenjutsu" name="visualStyle" value="genjutsu" />
+                <span>👁️ Ilusión Carmesí</span>
+              </label>
+              <label class="style-option" for="styleCyberpunk">
+                <input type="radio" id="styleCyberpunk" name="visualStyle" value="cyberpunk" />
+                <span>⚡ Cyberpunk Neón</span>
+              </label>
+              <label class="style-option" for="styleAnime">
+                <input type="radio" id="styleAnime" name="visualStyle" value="anime" />
+                <span>✨ Anime Studio</span>
+              </label>
+              <label class="style-option" for="styleAura">
+                <input type="radio" id="styleAura" name="visualStyle" value="aura" />
+                <span>🔥 Energía / Aura</span>
+              </label>
+              <label class="style-option" for="styleNoir">
+                <input type="radio" id="styleNoir" name="visualStyle" value="noir" />
+                <span>🌑 Noir Contraste</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset id="sceneControlFieldset">
+            <legend>4. Fondo de la Escena (Background Control)</legend>
+            <div class="scene-grid">
+              <label class="style-option" for="sceneAuto">
+                <input type="radio" id="sceneAuto" name="sceneMode" value="off" checked />
+                <span>✨ Automático</span>
+              </label>
+              <label class="style-option" for="sceneVideo">
+                <input type="radio" id="sceneVideo" name="sceneMode" value="video" />
+                <span>🎥 Fondo del Video</span>
+              </label>
+              <label class="style-option" for="sceneChar">
+                <input type="radio" id="sceneChar" name="sceneMode" value="character" />
+                <span>🖼️ Fondo de la Foto</span>
+              </label>
+              <label class="style-option" for="sceneLocation">
+                <input type="radio" id="sceneLocation" name="sceneMode" value="location" />
+                <span>🗺️ Subir otro Fondo</span>
+              </label>
+            </div>
+
+            <div class="location-drawer" id="locationDrawer">
+              <div>
+                <strong style="font-size: 0.84rem;">Imagen de Fondo Personalizada (@location)</strong>
+                <div id="locationStatusText" style="font-size: 0.76rem; color: var(--muted);">
+                  Sube un paisaje o escenario para colocar detrás de tu personaje.
+                </div>
+              </div>
+              <div>
+                <input type="file" id="locationFileInput" class="visually-hidden" accept="image/*" />
+                <label for="locationFileInput" class="mini-btn" style="cursor: pointer;">Subir Fondo</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <!-- 4. PROMPT Y BOTÓN PRINCIPAL DE GENERACIÓN GRATUITA -->
+        <div class="card section-stack">
+          <div>
+            <div class="prompt-header">
+              <label for="promptTextarea" class="prompt-label">5. Describe la Acción (Opcional)</label>
+              <div class="chip-group">
+                <button type="button" class="mention-chip" data-insert="@image1">+ @image1 (Personaje)</button>
+                <button type="button" class="mention-chip" data-insert="@video1">+ @video1 (Video)</button>
+              </div>
+            </div>
+            <textarea
+              id="promptTextarea"
+              placeholder="Ej: El personaje de @image1 realiza los movimientos de @video1 con iluminación cinematográfica épica y partículas de energía..."
+            >El personaje de @image1 realiza el movimiento de @video1 en una toma continua cinematográfica.</textarea>
+          </div>
+
+          <button type="submit" class="generate-cta" id="generateBtn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+            <span id="generateBtnText">Generar Video Gratis Ahora</span>
+          </button>
+
+          <!-- Opcional: Motor Cloud con API Key -->
+          <details class="cloud-drawer">
+            <summary>⚙️ Opcional Avanzado: Conectar API Key de Google Gemini / Veo</summary>
+            <div class="cloud-grid">
+              <div class="input-field">
+                <label for="engineSelect">Motor de Renderizado</label>
+                <select id="engineSelect">
+                  <option value="free-local" selected>Motor Genjutsu FX Integrado (100% Gratis · Sin Token)</option>
+                  <option value="gemini-omni-1.1-flash">Cloud: Gemini Omni 1.1 Flash (Requiere API Key)</option>
+                  <option value="veo-3.1-fast-generate-preview">Cloud: Veo 3.1 Fast (Requiere API Key)</option>
+                </select>
+              </div>
+              <div class="input-field">
+                <label for="apiKeyInput">Google AI Studio API Key (Solo para modo Cloud)</label>
+                <input
+                  type="password"
+                  id="apiKeyInput"
+                  placeholder="Dejar vacío para usar el Motor Gratuito"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+          </details>
+        </div>
+      </form>
+
+      <!-- COLUMNA DERECHA: REPRODUCTOR Y MONITOR EN VIVO -->
+      <section class="card stage-card" aria-label="Vista previa y resultado de video">
+        <div class="stage-top-bar">
+          <div class="stage-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <path d="M8 21h8M12 17v4" />
+            </svg>
+            <span>Monitor de Estudio</span>
+          </div>
+
+          <fieldset class="aspect-pills">
+            <legend class="visually-hidden">Formato de pantalla</legend>
+            <label class="style-option" for="aspect169" style="padding: 5px 10px; font-size: 0.76rem;">
+              <input type="radio" id="aspect169" name="aspectRatio" value="16:9" checked />
+              <span>16:9 Horizontal</span>
+            </label>
+            <label class="style-option" for="aspect916" style="padding: 5px 10px; font-size: 0.76rem;">
+              <input type="radio" id="aspect916" name="aspectRatio" value="9:16" />
+              <span>9:16 Vertical</span>
+            </label>
+          </fieldset>
+        </div>
+
+        <div class="viewport-frame" id="viewportFrame">
+          <canvas id="synthCanvas" width="1280" height="720"></canvas>
+          <video
+            id="resultVideo"
+            width="1280"
+            height="720"
+            controls
+            loop
+            playsinline
+          ></video>
+        </div>
+
+        <!-- Barra de progreso de renderizado -->
+        <div class="progress-banner" id="progressBanner">
+          <div class="progress-row">
+            <span id="progressStatusText">Sintetizando fotogramas de movimiento...</span>
+            <span id="progressPercentText">0%</span>
+          </div>
+          <progress id="renderProgress" value="0" max="100"></progress>
+        </div>
+
+        <!-- Barra de descarga cuando el video está listo -->
+        <div class="download-bar" id="downloadBar">
+          <div>
+            <div style="font-weight: 800; font-size: 0.9rem; color: var(--success);">
+              ¡Tu video Genjutsu está listo!
+            </div>
+            <div id="savedPathLabel" style="font-size: 0.76rem; color: var(--muted);">
+              Renderizado en alta definición a 30 FPS.
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="mini-btn" id="backToCanvasBtn">Ver Monitor en Vivo</button>
+            <a id="downloadVideoLink" class="download-link-btn" href="#" download="genjutsu_video.webm">
+              ⬇️ Descargar Video
             </a>
           </div>
-          <input
-            type="password"
-            id="geminiApiKey"
-            placeholder="AIzaSy... (Se guarda en tu navegador local)"
-            oninput="saveApiKey(this.value)"
-          />
-          <div class="controls-grid">
-            <div>
-              <label class="section-label" style="display:block; margin-bottom:4px">Motor Gemini</label>
-              <select id="geminiEngine" onchange="updateOutputs()">
-                <option value="gemini-omni-1.1-flash" selected>Gemini Omni 1.1 Flash (Video Edit / Motion)</option>
-                <option value="veo-3.1-fast-generate-preview">Veo 3.1 Fast Preview</option>
-                <option value="veo-3.1-generate-preview">Veo 3.1 Standard Preview</option>
-              </select>
-            </div>
-            <div>
-              <label class="section-label" style="display:block; margin-bottom:4px">Duración</label>
-              <select id="durationSelect" onchange="updateOutputs()">
-                <option value="">Auto (según video)</option>
-                <option value="5">5 segundos</option>
-                <option value="8">8 segundos</option>
-                <option value="10">10 segundos</option>
-              </select>
-            </div>
-          </div>
         </div>
+      </section>
+    </main>
 
-        <!-- Mode Selector: motion-control vs replace-objects -->
-        <div class="tabs" role="tablist">
-          <button class="tab-btn active" id="tabMotion" onclick="setMode('motion-control')">
-            Motion transfer
-          </button>
-          <button class="tab-btn" id="tabSwap" onclick="setMode('replace-objects')">
-            Objects swap
-          </button>
-        </div>
-
-        <!-- Driving Video Input -->
-        <div class="dropzone" onclick="document.getElementById('videoInput').click()">
-          <input type="file" id="videoInput" accept="video/mp4,video/webm,video/quicktime" style="display:none" onchange="handleVideoSelect(event)" />
-          <div class="dropzone-title" id="videoDropTitle">Add a reference video to extract motion</div>
-          <div class="dropzone-caption">Sube un MP4 local · Etiqueta: <code>@video1</code></div>
-          <div id="videoPreview" class="media-preview-grid"></div>
-        </div>
-
-        <!-- Reference Images Input -->
-        <div class="dropzone" onclick="document.getElementById('imageInput').click()">
-          <input type="file" id="imageInput" accept="image/jpeg,image/png,image/webp" multiple style="display:none" onchange="handleImageSelect(event)" />
-          <div class="dropzone-title">Add reference images</div>
-          <div class="dropzone-caption">Personajes, objetos o vestimenta (<code>@image1</code>, <code>@image2</code>...)</div>
-          <div id="imagePreview" class="media-preview-grid"></div>
-        </div>
-
-        <!-- Background Control (scene_mode) -->
-        <div class="section-box" id="bgControlSection">
-          <div class="row-between">
-            <span class="section-label">Background control (<code>scene_mode</code>)</span>
-            <input type="checkbox" id="bgControlToggle" onchange="toggleBgControl(this.checked)" />
-          </div>
-          <div class="radio-group" id="sceneModeGroup" style="display: none">
-            <div class="radio-item selected" data-scene="video" onclick="setSceneMode('video')">
-              <span>Motion video (Mantiene fondo de <code>@video1</code>)</span>
-              <span>✓</span>
-            </div>
-            <div class="radio-item" data-scene="character" onclick="setSceneMode('character')">
-              <span>Reference image (Usa fondo de <code>@image1</code>)</span>
-              <span></span>
-            </div>
-            <div class="radio-item" data-scene="location" onclick="setSceneMode('location')">
-              <span>Manual scene reference (Usa <code>@location</code>)</span>
-              <span></span>
-            </div>
-            <div id="locationUploadBox" style="display: none; margin-top: 6px">
-              <button class="btn-secondary" style="width:100%" onclick="document.getElementById('locationInput').click()">
-                + Subir imagen de fondo (<code>@location</code>)
-              </button>
-              <input type="file" id="locationInput" accept="image/*" style="display:none" onchange="handleLocationSelect(event)" />
-              <div id="locationPreview" class="media-preview-grid"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Prompt & @mentions -->
-        <div class="section-box">
-          <div class="row-between">
-            <span class="section-label">Prompt</span>
-            <span style="font-size: 0.72rem; color: var(--text-secondary)">Clic para insertar etiqueta</span>
-          </div>
-          <div id="mentionChips" class="media-preview-grid" style="margin-top:0"></div>
-          <textarea
-            id="promptInput"
-            rows="3"
-            placeholder="Describe your new scene — e.g. 'the character from @image1 dancing on a rooftop' or 'same moves, new location: Tokyo at night'."
-            oninput="updateOutputs()"
-          ></textarea>
-        </div>
-
-        <!-- Resolution & Aspect Ratio -->
-        <div class="controls-grid">
-          <div>
-            <label class="section-label" style="display:block; margin-bottom:4px">Resolución</label>
-            <select id="resolutionSelect" onchange="updateOutputs()">
-              <option value="360p">360p (Rápido)</option>
-              <option value="720p" selected>720p (HD)</option>
-              <option value="1080p">1080p (Full HD)</option>
-              <option value="4k">4K (Ultra HD)</option>
-            </select>
-          </div>
-          <div>
-            <label class="section-label" style="display:block; margin-bottom:4px">Aspect Ratio</label>
-            <select id="aspectSelect" onchange="updateOutputs()">
-              <option value="16:9" selected>16:9 (Horizontal)</option>
-              <option value="9:16">9:16 (Vertical)</option>
-            </select>
-          </div>
-        </div>
-
-        <button class="btn-generate" id="generateBtn" onclick="executeGeminiGeneration()">
-          <span>⚡</span>
-          <span id="generateBtnText">Generar Video con Gemini / Veo</span>
-        </button>
-      </aside>
-
-      <!-- MAIN PANEL -->
-      <main class="main-panel">
-        <div class="status-banner" id="statusBanner">
-          <strong>Motor Gemini Omni 1.1 Flash &amp; Veo 3.1 activo:</strong> En la ingeniería inversa de Higgsfield vimos que el bundle <code>2feeef17-_aaiC1MSWYc2KRdp.js</code> utiliza <code>gemini-omni-flash-1-1</code> para edición y transferencia por referencias. Al pulsar <strong>Generar Video</strong>, nuestro servidor local sube tus archivos a la <strong>Files API</strong> de Google, traduce tus etiquetas <code>@video1</code> y <code>@image1</code> a la sintaxis oficial <code>[# Sources &lt;VIDEO_0&gt;@Video1] [# References &lt;IMAGE_REF_0&gt;@Image1]</code> de <strong>Interactions API</strong> y descarga el MP4 resultante.
-        </div>
-
-        <!-- Reproductor de Video Resultante -->
-        <div class="card">
-          <div class="row-between" style="margin-bottom: 10px">
-            <h3>🎬 Resultado de Generación</h3>
-            <span id="interactionBadge" style="font-size: 0.75rem; color: var(--brand-lime)"></span>
-          </div>
-          <div class="video-stage" id="videoStage">
-            <span style="color: var(--text-secondary); font-size: 0.85rem">
-              Sube un video/imagen de referencia, ingresa tu Gemini API Key y pulsa "Generar Video".
-            </span>
-          </div>
-        </div>
-
-        <!-- Llamada real a Gemini Omni 1.1 Flash Interactions API -->
-        <div class="card">
-          <div class="row-between" style="margin-bottom: 10px">
-            <h3>1. Traducción en Tiempo Real a <code>gemini-omni-1.1-flash</code> (Interactions API)</h3>
-            <button class="btn-secondary" onclick="copyText('omniPayloadOutput')">Copiar JSON</button>
-          </div>
-          <pre id="omniPayloadOutput"></pre>
-        </div>
-
-        <!-- Payload original reconstruido de Higgsfield Genjutsu -->
-        <div class="card">
-          <div class="row-between" style="margin-bottom: 10px">
-            <h3>2. Contrato Interno de Higgsfield Genjutsu (Reconstruido con REA)</h3>
-            <button class="btn-secondary" onclick="copyText('reaPayloadOutput')">Copiar JSON</button>
-          </div>
-          <pre id="reaPayloadOutput"></pre>
-        </div>
-      </main>
-    </div>
-
-    <script>
+    <script type="module">
+      // Estado visual de la aplicación (sin paneles JSON crudos)
       const state = {
         mode: "motion-control",
-        bgControlEnabled: false,
+        visualStyle: "cinematic",
         sceneMode: "off",
-        sourceVideo: null,
-        images: [],
-        locationMedia: null,
-        lastInteractionId: null,
+        aspectRatio: "16:9",
+        sourceVideo: null, // { name, url, localPath, mimeType, videoEl }
+        images: [], // [{ name, url, localPath, mimeType, imgEl }]
+        locationMedia: null, // { name, url, localPath, mimeType, imgEl }
+        isRendering: false,
       };
 
-      // Cargar API Key guardada en localStorage
-      window.addEventListener("DOMContentLoaded", async () => {
-        const savedKey = localStorage.getItem("GENJUTSU_GEMINI_API_KEY") || "";
-        if (savedKey) {
-          document.getElementById("geminiApiKey").value = savedKey;
-        }
+      // Referencias DOM
+      const studioForm = document.getElementById("studioForm");
+      const videoFileInput = document.getElementById("videoFileInput");
+      const imageFileInput = document.getElementById("imageFileInput");
+      const locationFileInput = document.getElementById("locationFileInput");
+      const videoDropCard = document.getElementById("videoDropCard");
+      const imageDropCard = document.getElementById("imageDropCard");
+      const videoEmptyLabel = document.getElementById("videoEmptyLabel");
+      const videoPreviewBox = document.getElementById("videoPreviewBox");
+      const uploadedVideoPreview = document.getElementById("uploadedVideoPreview");
+      const videoFilenameLabel = document.getElementById("videoFilenameLabel");
+      const clearVideoBtn = document.getElementById("clearVideoBtn");
+      const loadDemoVideoActionBtn = document.getElementById("loadDemoVideoActionBtn");
+
+      const imageEmptyLabel = document.getElementById("imageEmptyLabel");
+      const imagePreviewBox = document.getElementById("imagePreviewBox");
+      const imageThumbsGrid = document.getElementById("imageThumbsGrid");
+      const imageCountLabel = document.getElementById("imageCountLabel");
+      const clearImagesBtn = document.getElementById("clearImagesBtn");
+
+      const locationDrawer = document.getElementById("locationDrawer");
+      const locationStatusText = document.getElementById("locationStatusText");
+      const promptTextarea = document.getElementById("promptTextarea");
+      const generateBtn = document.getElementById("generateBtn");
+      const generateBtnText = document.getElementById("generateBtnText");
+      const engineSelect = document.getElementById("engineSelect");
+      const apiKeyInput = document.getElementById("apiKeyInput");
+
+      const viewportFrame = document.getElementById("viewportFrame");
+      const synthCanvas = document.getElementById("synthCanvas");
+      const ctx = synthCanvas.getContext("2d", { willReadFrequently: true });
+      const resultVideo = document.getElementById("resultVideo");
+      const progressBanner = document.getElementById("progressBanner");
+      const progressStatusText = document.getElementById("progressStatusText");
+      const progressPercentText = document.getElementById("progressPercentText");
+      const renderProgress = document.getElementById("renderProgress");
+      const downloadBar = document.getElementById("downloadBar");
+      const downloadVideoLink = document.getElementById("downloadVideoLink");
+      const savedPathLabel = document.getElementById("savedPathLabel");
+      const backToCanvasBtn = document.getElementById("backToCanvasBtn");
+
+      // Canvas auxiliar para análisis óptico de movimiento del video base
+      const motionProbeCanvas = document.createElement("canvas");
+      motionProbeCanvas.width = 48;
+      motionProbeCanvas.height = 27;
+      const probeCtx = motionProbeCanvas.getContext("2d", { willReadFrequently: true });
+      let prevProbeData = null;
+      let smoothedMotion = { cx: 0.5, cy: 0.5, energy: 0.15 };
+
+      // Partículas para el sintetizador visual
+      const particles = Array.from({ length: 55 }, (_, i) => ({
+        x: (i * 73) % 100 / 100,
+        y: (i * 39) % 100 / 100,
+        size: 1.5 + (i % 4) * 1.4,
+        speedY: -0.002 - (i % 5) * 0.0012,
+        speedX: ((i % 3) - 1) * 0.001,
+        phase: i * 0.7,
+      }));
+
+      // Utilidad para subir un archivo al servidor local (/uploads)
+      async function uploadBufferAsBase64(filename, mimeType, base64Data) {
         try {
-          const r = await fetch("/api/health");
-          const h = await r.json();
-          if (h.hasEnvApiKey && !savedKey) {
-            document.getElementById("geminiApiKey").placeholder =
-              "Usando GEMINI_API_KEY detectada en variables de entorno";
-          }
-        } catch {}
-        renderMediaPreviews();
-        updateOutputs();
-      });
-
-      function saveApiKey(val) {
-        localStorage.setItem("GENJUTSU_GEMINI_API_KEY", val.trim());
+          const res = await fetch("/api/upload-local", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ filename, mimeType, base64Data }),
+          });
+          return await res.json();
+        } catch {
+          return { ok: false };
+        }
       }
 
-      function setMode(mode) {
-        state.mode = mode;
-        document.getElementById("tabMotion").classList.toggle("active", mode === "motion-control");
-        document.getElementById("tabSwap").classList.toggle("active", mode === "replace-objects");
-        document.getElementById("bgControlSection").style.display =
-          mode === "motion-control" ? "flex" : "none";
-        document.getElementById("videoDropTitle").textContent =
-          mode === "replace-objects"
-            ? "Add a reference video to edit"
-            : "Add a reference video to extract motion";
-        document.getElementById("promptInput").placeholder =
-          mode === "replace-objects"
-            ? "Describe what to change — e.g. 'replace the man with the cat from @image1' or 'change the location to mountains'."
-            : "Describe your new scene — e.g. 'the character from @image1 dancing on a rooftop' or 'same moves, new location: Tokyo at night'.";
-        updateOutputs();
-      }
-
-      function toggleBgControl(checked) {
-        state.bgControlEnabled = checked;
-        state.sceneMode = checked ? "video" : "off";
-        document.getElementById("sceneModeGroup").style.display = checked ? "flex" : "none";
-        renderSceneModeSelection();
-        updateOutputs();
-      }
-
-      function setSceneMode(mode) {
-        state.sceneMode = mode;
-        renderSceneModeSelection();
-        updateOutputs();
-      }
-
-      function renderSceneModeSelection() {
-        document.querySelectorAll("#sceneModeGroup .radio-item").forEach((el) => {
-          const isMatch = el.getAttribute("data-scene") === state.sceneMode;
-          el.classList.toggle("selected", isMatch);
-          el.lastElementChild.textContent = isMatch ? "✓" : "";
-        });
-        document.getElementById("locationUploadBox").style.display =
-          state.sceneMode === "location" ? "block" : "none";
-      }
-
-      async function uploadFileToLocalServer(file) {
-        const base64Data = await new Promise((resolve, reject) => {
+      function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = () => {
-            const res = String(reader.result || "");
-            resolve(res.includes(",") ? res.split(",")[1] : res);
+            const result = String(reader.result || "");
+            resolve(result.includes(",") ? result.split(",")[1] : result);
           };
           reader.onerror = reject;
           reader.readAsDataURL(file);
         });
-        const resp = await fetch("/api/upload-local", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            filename: file.name,
-            mimeType: file.type || "application/octet-stream",
-            base64Data,
-          }),
-        });
-        const data = await resp.json();
-        if (!data.ok) throw new Error(data.error || "Error subiendo archivo");
-        return {
-          id: crypto.randomUUID(),
+      }
+
+      // Manejo de Video Subido
+      async function handleVideoFile(file) {
+        if (!file) return;
+        const objectUrl = URL.createObjectURL(file);
+        const videoEl = document.createElement("video");
+        videoEl.src = objectUrl;
+        videoEl.muted = true;
+        videoEl.loop = true;
+        videoEl.playsInline = true;
+        await videoEl.play().catch(() => {});
+
+        const base64 = await fileToBase64(file);
+        const uploaded = await uploadBufferAsBase64(file.name, file.type || "video/mp4", base64);
+
+        state.sourceVideo = {
           name: file.name,
-          mimeType: data.mimeType,
-          localPath: data.localPath,
-          publicUrl: data.publicUrl,
-          type: file.type.startsWith("video/") ? "video_input" : "image_job",
+          url: objectUrl,
+          localPath: uploaded.localPath || null,
+          mimeType: file.type || "video/mp4",
+          videoEl,
+          isSyntheticDemo: false,
         };
+
+        updateVideoCardUI();
       }
 
-      async function handleVideoSelect(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const banner = document.getElementById("statusBanner");
-        banner.innerHTML = `⏳ Preparando video local <code>${file.name}</code>...`;
-        try {
-          state.sourceVideo = await uploadFileToLocalServer(file);
-          banner.innerHTML = `✅ Video <code>${file.name}</code> listo como <code>@video1</code>.`;
-          renderMediaPreviews();
-          updateOutputs();
-        } catch (err) {
-          banner.innerHTML = `❌ Error al cargar video: ${err.message}`;
-        }
-      }
-
-      async function handleImageSelect(event) {
-        const files = Array.from(event.target.files);
-        if (!files.length) return;
-        const banner = document.getElementById("statusBanner");
-        banner.innerHTML = `⏳ Cargando ${files.length} imagen(es) de referencia...`;
-        try {
-          const uploaded = [];
-          for (const f of files.slice(0, 10)) {
-            uploaded.push(await uploadFileToLocalServer(f));
+      function updateVideoCardUI() {
+        if (state.sourceVideo) {
+          videoEmptyLabel.style.display = "none";
+          videoPreviewBox.classList.add("active");
+          if (state.sourceVideo.url) {
+            uploadedVideoPreview.src = state.sourceVideo.url;
+            uploadedVideoPreview.play().catch(() => {});
           }
-          state.images = uploaded;
-          banner.innerHTML = `✅ ${uploaded.length} imagen(es) listas (${uploaded.map((_, i) => `@image${i + 1}`).join(", ")}).`;
-          renderMediaPreviews();
-          updateOutputs();
-        } catch (err) {
-          banner.innerHTML = `❌ Error al cargar imágenes: ${err.message}`;
-        }
-      }
-
-      async function handleLocationSelect(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        try {
-          state.locationMedia = await uploadFileToLocalServer(file);
-          renderMediaPreviews();
-          updateOutputs();
-        } catch (err) {
-          alert(err.message);
-        }
-      }
-
-      function renderMediaPreviews() {
-        const vContainer = document.getElementById("videoPreview");
-        vContainer.innerHTML = state.sourceVideo
-          ? `<span class="media-pill">🎬 <code>@video1</code> ${state.sourceVideo.name}</span>`
-          : `<span class="media-pill" style="opacity:0.6">🎬 Sin video (haz clic para subir MP4)</span>`;
-
-        const iContainer = document.getElementById("imagePreview");
-        iContainer.innerHTML = state.images.length
-          ? state.images
-              .map(
-                (img, idx) =>
-                  `<span class="media-pill">🖼️ <code>@image${idx + 1}</code> ${img.name}</span>`,
-              )
-              .join("")
-          : `<span class="media-pill" style="opacity:0.6">🖼️ Sin imágenes (haz clic para subir PNG/JPG)</span>`;
-
-        const locContainer = document.getElementById("locationPreview");
-        if (locContainer) {
-          locContainer.innerHTML = state.locationMedia
-            ? `<span class="media-pill">🏞️ <code>@location</code> ${state.locationMedia.name}</span>`
-            : "";
-        }
-
-        const chips = document.getElementById("mentionChips");
-        const list = [`<span class="media-pill" onclick="insertMention('@video1')"><code>@video1</code> Video</span>`];
-        const count = Math.max(1, state.images.length);
-        for (let i = 0; i < count; i++) {
-          list.push(
-            `<span class="media-pill" onclick="insertMention('@image${i + 1}')"><code>@image${i + 1}</code> Ref ${i + 1}</span>`,
-          );
-        }
-        if (state.sceneMode === "location") {
-          list.push(
-            `<span class="media-pill" onclick="insertMention('@location')"><code>@location</code> Fondo</span>`,
-          );
-        }
-        chips.innerHTML = list.join("");
-      }
-
-      function insertMention(tag) {
-        const input = document.getElementById("promptInput");
-        const start = input.selectionStart || input.value.length;
-        const before = input.value.slice(0, start);
-        const after = input.value.slice(start);
-        input.value = `${before}${before && !before.endsWith(" ") ? " " : ""}${tag} ${after}`;
-        input.focus();
-        updateOutputs();
-      }
-
-      function buildOmniPreview() {
-        const engine = document.getElementById("geminiEngine").value;
-        const resolution = document.getElementById("resolutionSelect").value;
-        const aspectRatio = document.getElementById("aspectSelect").value;
-        const duration = document.getElementById("durationSelect").value;
-        const rawPrompt = document.getElementById("promptInput").value.trim();
-
-        const imgs = state.images.length
-          ? state.images
-          : [{ name: "character_ref_1.png", mimeType: "image/png" }];
-        const vid = state.sourceVideo || { name: "driving_video.mp4", mimeType: "video/mp4" };
-
-        const refTags = imgs.map((_, i) => `<IMAGE_REF_${i}>@Image${i + 1}`);
-        if (state.sceneMode === "location") {
-          refTags.push(`<IMAGE_REF_${imgs.length}>@Image${imgs.length + 1}`);
-        }
-
-        let translated = rawPrompt || (state.mode === "replace-objects"
-          ? "Replace the main subject in @video1 with @image1"
-          : "The character from @image1 performing the motion in @video1");
-
-        imgs.forEach((_, idx) => {
-          translated = translated.replace(new RegExp(`@image${idx + 1}\\b`, "gi"), `<IMAGE_REF_${idx}>`);
-        });
-        if (state.sceneMode === "location") {
-          translated = translated.replace(/@location\b/gi, `<IMAGE_REF_${imgs.length}>`);
-        }
-
-        let finalPrompt = "";
-        if (state.mode === "replace-objects") {
-          translated = translated.replace(/@video1\b/gi, "<VIDEO_0>");
-          finalPrompt = `[# Sources <VIDEO_0>@Video1] [# References ${refTags.join(" ")}] ${translated}. Keep everything else the same.`;
+          videoFilenameLabel.textContent = `@video1 · ${state.sourceVideo.name}`;
         } else {
-          translated = translated.replace(/@video1\b/gi, "<VIDEO_REF_0>");
-          finalPrompt = `[# References ${refTags.join(" ")} <VIDEO_REF_0>@Video1] ${translated}. Use the given image(s) as references for video generation and transfer the motion from <VIDEO_REF_0>.`;
+          videoEmptyLabel.style.display = "flex";
+          videoPreviewBox.classList.remove("active");
+          uploadedVideoPreview.removeAttribute("src");
+        }
+      }
+
+      // Generador de Video Demo en tiempo real si el usuario no tiene un archivo MP4 a mano
+      async function loadDemoDrivingVideo() {
+        const demoCanvas = document.createElement("canvas");
+        demoCanvas.width = 640;
+        demoCanvas.height = 360;
+        const dctx = demoCanvas.getContext("2d");
+
+        const stream = demoCanvas.captureStream(30);
+        const mimeType = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
+          ? "video/webm;codecs=vp9"
+          : "video/webm";
+        const recorder = new MediaRecorder(stream, { mimeType });
+        const chunks = [];
+        recorder.ondataavailable = (e) => {
+          if (e.data.size > 0) chunks.push(e.data);
+        };
+
+        recorder.start();
+        const totalFrames = 75; // 2.5s loop
+        for (let f = 0; f < totalFrames; f++) {
+          const t = f / totalFrames;
+          const angle = t * Math.PI * 2;
+          // Fondo urbano nocturno en movimiento
+          const grad = dctx.createLinearGradient(0, 0, 640, 360);
+          grad.addColorStop(0, "#0b132b");
+          grad.addColorStop(0.5, "#1c2541");
+          grad.addColorStop(1, "#0f172a");
+          dctx.fillStyle = grad;
+          dctx.fillRect(0, 0, 640, 360);
+
+          // Grilla de perspectiva en movimiento
+          dctx.strokeStyle = "rgba(56, 189, 248, 0.28)";
+          dctx.lineWidth = 1.5;
+          for (let i = 0; i < 10; i++) {
+            const y = 180 + ((i * 22 + f * 3) % 180);
+            dctx.beginPath();
+            dctx.moveTo(0, y);
+            dctx.lineTo(640, y);
+            dctx.stroke();
+          }
+
+          // Silueta guía de acción dinámica (@video1)
+          const cx = 320 + Math.sin(angle) * 110;
+          const cy = 185 + Math.cos(angle * 2) * 32;
+          const rad = 52 + Math.sin(angle * 2) * 8;
+
+          const glow = dctx.createRadialGradient(cx, cy, 5, cx, cy, rad * 1.9);
+          glow.addColorStop(0, "rgba(56, 189, 248, 0.95)");
+          glow.addColorStop(1, "rgba(56, 189, 248, 0)");
+          dctx.fillStyle = glow;
+          dctx.beginPath();
+          dctx.arc(cx, cy, rad * 1.9, 0, Math.PI * 2);
+          dctx.fill();
+
+          dctx.fillStyle = "#e0f2fe";
+          dctx.beginPath();
+          dctx.arc(cx, cy - 28, 22, 0, Math.PI * 2);
+          dctx.fill();
+          dctx.beginPath();
+          dctx.roundRect(cx - 28, cy - 2, 56, 78, 14);
+          dctx.fill();
+
+          await new Promise((r) => setTimeout(r, 12));
         }
 
-        return {
-          sdk: "@google/genai",
-          method: engine === "gemini-omni-1.1-flash" ? "ai.interactions.create" : "ai.models.generateVideos",
-          request: {
-            model: engine,
-            input: [
-              ...imgs.map((img, i) => ({
-                type: "image",
-                uri: `https://generativelanguage.googleapis.com/files/img_ref_${i + 1}`,
-                mime_type: img.mimeType || "image/png",
-              })),
-              {
-                type: "video",
-                uri: "https://generativelanguage.googleapis.com/files/video_source_1",
-                mime_type: vid.mimeType || "video/mp4",
-              },
-              {
-                type: "text",
-                text: finalPrompt,
-              },
-            ],
-            response_format: {
-              type: "video",
-              delivery: "uri",
-              aspect_ratio: aspectRatio,
-              resolution,
-              ...(duration ? { duration: `${duration}s` } : {}),
-            },
-          },
+        const blob = await new Promise((resolve) => {
+          recorder.onstop = () => resolve(new Blob(chunks, { type: "video/webm" }));
+          recorder.stop();
+        });
+
+        const demoFile = new File([blob], "demo_camara_accion.webm", { type: "video/webm" });
+        await handleVideoFile(demoFile);
+      }
+
+      // Manejo de Imágenes Subidas (@image1, @image2...)
+      async function handleImageFiles(fileList) {
+        for (const file of Array.from(fileList)) {
+          if (!file.type.startsWith("image/")) continue;
+          const objectUrl = URL.createObjectURL(file);
+          const imgEl = new Image();
+          imgEl.src = objectUrl;
+          await new Promise((res) => {
+            imgEl.onload = res;
+            imgEl.onerror = res;
+          });
+
+          const base64 = await fileToBase64(file);
+          const uploaded = await uploadBufferAsBase64(file.name, file.type || "image/png", base64);
+
+          state.images.push({
+            name: file.name,
+            url: objectUrl,
+            localPath: uploaded.localPath || null,
+            mimeType: file.type || "image/png",
+            imgEl,
+          });
+        }
+        updateImageCardUI();
+      }
+
+      function updateImageCardUI() {
+        if (state.images.length > 0) {
+          imageEmptyLabel.style.display = "none";
+          imagePreviewBox.classList.add("active");
+          imageCountLabel.textContent =
+            state.images.length === 1
+              ? "1 personaje listo (@image1)"
+              : `${state.images.length} imágenes listas`;
+
+          imageThumbsGrid.innerHTML = "";
+          state.images.forEach((item, idx) => {
+            const wrap = document.createElement("div");
+            wrap.className = "thumb-item";
+
+            const img = document.createElement("img");
+            img.src = item.url;
+            img.alt = item.name;
+
+            const badge = document.createElement("span");
+            badge.className = "thumb-badge";
+            badge.textContent = `@image${idx + 1}`;
+
+            const removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.className = "thumb-remove-btn";
+            removeBtn.title = "Quitar imagen";
+            removeBtn.textContent = "×";
+            removeBtn.addEventListener("click", () => {
+              state.images.splice(idx, 1);
+              updateImageCardUI();
+            });
+
+            wrap.append(img, badge, removeBtn);
+            imageThumbsGrid.appendChild(wrap);
+          });
+        } else {
+          imageEmptyLabel.style.display = "flex";
+          imagePreviewBox.classList.remove("active");
+          imageThumbsGrid.innerHTML = "";
+        }
+      }
+
+      // Generador de Personajes Demo en Alta Resolución (Samurái, Ninja, Mecha)
+      async function createDemoCharacterPreset(kind) {
+        const c = document.createElement("canvas");
+        c.width = 512;
+        c.height = 512;
+        const g = c.getContext("2d");
+
+        const palettes = {
+          samurai: { bg1: "#1a103c", bg2: "#090d16", primary: "#d2ff28", secondary: "#38bdf8", title: "Samurái Neón" },
+          ninja: { bg1: "#3b071e", bg2: "#09060c", primary: "#fb7185", secondary: "#f59e0b", title: "Ninja Genjutsu" },
+          mecha: { bg1: "#082f49", bg2: "#050b14", primary: "#22d3ee", secondary: "#a855f7", title: "Mecha Cyber" },
         };
+        const pal = palettes[kind] || palettes.samurai;
+
+        // Fondo estilizado
+        const bgGrad = g.createRadialGradient(256, 210, 30, 256, 256, 260);
+        bgGrad.addColorStop(0, pal.bg1);
+        bgGrad.addColorStop(1, pal.bg2);
+        g.fillStyle = bgGrad;
+        g.fillRect(0, 0, 512, 512);
+
+        // Halo de energía detrás del personaje
+        g.strokeStyle = pal.primary;
+        g.lineWidth = 5;
+        g.beginPath();
+        g.arc(256, 230, 145, 0, Math.PI * 2);
+        g.stroke();
+
+        // Armadura / torso del personaje
+        g.fillStyle = "#1e293b";
+        g.beginPath();
+        g.moveTo(135, 480);
+        g.lineTo(175, 275);
+        g.lineTo(337, 275);
+        g.lineTo(377, 480);
+        g.closePath();
+        g.fill();
+        g.strokeStyle = pal.secondary;
+        g.lineWidth = 4;
+        g.stroke();
+
+        // Hombreras tácticas
+        g.fillStyle = pal.primary;
+        g.beginPath();
+        g.moveTo(120, 295);
+        g.lineTo(200, 265);
+        g.lineTo(185, 325);
+        g.closePath();
+        g.fill();
+
+        g.beginPath();
+        g.moveTo(392, 295);
+        g.lineTo(312, 265);
+        g.lineTo(327, 325);
+        g.closePath();
+        g.fill();
+
+        // Casco / Cabeza
+        g.fillStyle = "#0f172a";
+        g.beginPath();
+        g.arc(256, 195, 68, 0, Math.PI * 2);
+        g.fill();
+        g.strokeStyle = pal.primary;
+        g.lineWidth = 3.5;
+        g.stroke();
+
+        // Visor luminoso
+        g.fillStyle = pal.primary;
+        g.shadowColor = pal.primary;
+        g.shadowBlur = 18;
+        g.beginPath();
+        g.roundRect(206, 178, 100, 24, 10);
+        g.fill();
+        g.shadowBlur = 0;
+
+        // Katana / Accesorio diagonal
+        g.strokeStyle = pal.secondary;
+        g.lineWidth = 7;
+        g.beginPath();
+        g.moveTo(145, 430);
+        g.lineTo(375, 110);
+        g.stroke();
+
+        const blob = await new Promise((resolve) => c.toBlob(resolve, "image/png"));
+        const file = new File([blob], `${kind}_character.png`, { type: "image/png" });
+        state.images = []; // Reemplazar con el personaje elegido para que sea inmediato
+        await handleImageFiles([file]);
       }
 
-      function buildReaReconstructedPayload() {
-        const resolution = document.getElementById("resolutionSelect").value;
-        const aspectRatio = document.getElementById("aspectSelect").value;
-        const promptText = document.getElementById("promptInput").value.trim() || null;
-        const vidId = state.sourceVideo?.id || "b70f42d0-811c-4c3f-9d12-0001video";
-        const imgs = state.images.length
-          ? state.images
-          : [{ id: "a19c33e1-442b-4a11-8b20-0001image", type: "image_job" }];
+      // Análisis óptico de movimiento sobre el video base
+      function sampleVideoMotion(videoEl) {
+        if (!videoEl || videoEl.readyState < 2) {
+          const now = performance.now() * 0.0025;
+          return {
+            cx: 0.5 + Math.sin(now) * 0.14,
+            cy: 0.5 + Math.cos(now * 1.5) * 0.08,
+            energy: 0.22 + Math.abs(Math.sin(now * 2)) * 0.25,
+          };
+        }
 
-        const jobType =
-          state.mode === "replace-objects"
-            ? "hf_mult_replace_object"
-            : "hf_mult_motion_control";
+        probeCtx.drawImage(videoEl, 0, 0, motionProbeCanvas.width, motionProbeCanvas.height);
+        const frame = probeCtx.getImageData(0, 0, motionProbeCanvas.width, motionProbeCanvas.height).data;
 
-        return {
-          endpoint: `POST https://fnf.higgsfield.ai/jobs/v2/${jobType}`,
-          payload: {
-            params: {
-              resolution,
-              batch_size: 1,
-              medias: [
-                ...imgs.map((img) => ({
-                  role: "image",
-                  data: { id: img.id, type: img.type || "image_job" },
-                })),
-                ...(state.sceneMode === "location" && state.locationMedia
-                  ? [
-                      {
-                        role: "location",
-                        data: { id: state.locationMedia.id, type: "image_job" },
-                      },
-                    ]
-                  : []),
-                {
-                  role: "video",
-                  data: { id: vidId, type: "video_input" },
-                },
-              ],
-              prompt: promptText,
-              aspect_ratio: aspectRatio,
-              ...(state.sceneMode !== "off" && state.sceneMode !== "video"
-                ? { scene_mode: state.sceneMode }
-                : {}),
-              location_character_media_id:
-                state.sceneMode === "character" ? imgs[0].id : null,
-              folder_id: null,
-            },
-            use_unlim: false,
-            use_free_gens: false,
-            client_meta: { is_free_generation: false },
-          },
+        if (!prevProbeData) {
+          prevProbeData = new Uint8ClampedArray(frame);
+          return smoothedMotion;
+        }
+
+        let diffSum = 0;
+        let weightedX = 0;
+        let weightedY = 0;
+        const w = motionProbeCanvas.width;
+        const h = motionProbeCanvas.height;
+
+        for (let y = 0; y < h; y++) {
+          for (let x = 0; x < w; x++) {
+            const idx = (y * w + x) * 4;
+            const d =
+              Math.abs(frame[idx] - prevProbeData[idx]) +
+              Math.abs(frame[idx + 1] - prevProbeData[idx + 1]) +
+              Math.abs(frame[idx + 2] - prevProbeData[idx + 2]);
+            if (d > 28) {
+              diffSum += d;
+              weightedX += (x / w) * d;
+              weightedY += (y / h) * d;
+            }
+          }
+        }
+
+        prevProbeData.set(frame);
+
+        if (diffSum > 1500) {
+          const targetX = weightedX / diffSum;
+          const targetY = weightedY / diffSum;
+          const normEnergy = Math.min(1, diffSum / (w * h * 180));
+          smoothedMotion.cx = smoothedMotion.cx * 0.78 + targetX * 0.22;
+          smoothedMotion.cy = smoothedMotion.cy * 0.78 + targetY * 0.22;
+          smoothedMotion.energy = smoothedMotion.energy * 0.7 + normEnergy * 0.3;
+        } else {
+          smoothedMotion.energy *= 0.92;
+        }
+
+        return smoothedMotion;
+      }
+
+      // Motor de composición fotograma a fotograma en el Canvas principal
+      function renderCompositeFrame(timeSec) {
+        const W = synthCanvas.width;
+        const H = synthCanvas.height;
+        ctx.save();
+        ctx.clearRect(0, 0, W, H);
+
+        const videoEl = state.sourceVideo?.videoEl || null;
+        const charImg = state.images[0]?.imgEl || null;
+        const locImg = state.locationMedia?.imgEl || null;
+        const motion = sampleVideoMotion(videoEl);
+
+        // Configuraciones de estilo visual
+        const stylePalettes = {
+          cinematic: { tint: "rgba(14, 165, 233, 0.14)", glow: "#38bdf8", filter: "contrast(1.12) saturate(1.15)" },
+          genjutsu: { tint: "rgba(225, 29, 72, 0.24)", glow: "#fb7185", filter: "contrast(1.22) saturate(1.35) hue-rotate(-12deg)" },
+          cyberpunk: { tint: "rgba(192, 132, 252, 0.22)", glow: "#d2ff28", filter: "contrast(1.18) saturate(1.45)" },
+          anime: { tint: "rgba(56, 189, 248, 0.16)", glow: "#a855f7", filter: "contrast(1.25) saturate(1.5)" },
+          aura: { tint: "rgba(245, 158, 11, 0.2)", glow: "#f59e0b", filter: "contrast(1.16) brightness(1.06)" },
+          noir: { tint: "rgba(255, 255, 255, 0.08)", glow: "#e2e8f0", filter: "grayscale(0.88) contrast(1.35)" },
         };
+        const activeStyle = stylePalettes[state.visualStyle] || stylePalettes.cinematic;
+        ctx.filter = activeStyle.filter;
+
+        // 1. DIBUJAR FONDO SEGÚN EL MODO Y CONTROL DE ESCENARIO
+        const shiftX = (motion.cx - 0.5) * 48;
+        const shiftY = (motion.cy - 0.5) * 32;
+
+        if (state.mode === "replace-objects" && videoEl && videoEl.readyState >= 2) {
+          // En Objects Swap el fondo siempre es el video original completo
+          ctx.drawImage(videoEl, 0, 0, W, H);
+        } else if (state.sceneMode === "location" && locImg) {
+          ctx.drawImage(locImg, -20 - shiftX * 0.5, -20 - shiftY * 0.5, W + 40, H + 40);
+        } else if (state.sceneMode === "video" && videoEl && videoEl.readyState >= 2) {
+          ctx.drawImage(videoEl, 0, 0, W, H);
+        } else if (state.sceneMode === "character" && charImg) {
+          ctx.save();
+          ctx.filter = `${activeStyle.filter} blur(18px) brightness(0.55)`;
+          ctx.drawImage(charImg, -40 - shiftX, -40 - shiftY, W + 80, H + 80);
+          ctx.restore();
+        } else if (videoEl && videoEl.readyState >= 2) {
+          ctx.save();
+          ctx.globalAlpha = 0.85;
+          ctx.drawImage(videoEl, 0, 0, W, H);
+          ctx.restore();
+        } else {
+          // Fondo atmosférico generativo si aún no se subió video
+          const bgGrad = ctx.createRadialGradient(
+            W * 0.5 + shiftX,
+            H * 0.45 + shiftY,
+            40,
+            W * 0.5,
+            H * 0.5,
+            Math.max(W, H) * 0.75
+          );
+          bgGrad.addColorStop(0, "#1e293b");
+          bgGrad.addColorStop(0.55, "#0f172a");
+          bgGrad.addColorStop(1, "#05070b");
+          ctx.fillStyle = bgGrad;
+          ctx.fillRect(0, 0, W, H);
+        }
+
+        // 2. TRANSFERIR EL MOVIMIENTO AL PERSONAJE U OBJETO (@image1)
+        const targetX = W * (0.5 + (motion.cx - 0.5) * 0.65);
+        const targetY = H * (0.54 + (motion.cy - 0.5) * 0.45) + Math.sin(timeSec * 5.2) * (6 + motion.energy * 18);
+        const dynamicScale = 1 + Math.sin(timeSec * 3.4) * 0.035 + motion.energy * 0.18;
+        const dynamicTilt = (motion.cx - 0.5) * 0.16 + Math.sin(timeSec * 2.7) * 0.025;
+
+        if (charImg) {
+          ctx.save();
+          ctx.translate(targetX, targetY);
+          ctx.rotate(dynamicTilt);
+          ctx.scale(dynamicScale, dynamicScale);
+
+          const baseSize = Math.min(W, H) * (state.mode === "replace-objects" ? 0.56 : 0.68);
+          const aspect = charImg.width / Math.max(1, charImg.height);
+          const drawW = aspect >= 1 ? baseSize * aspect : baseSize;
+          const drawH = aspect >= 1 ? baseSize : baseSize / aspect;
+
+          // Halo / Aura reactiva al movimiento
+          ctx.shadowColor = activeStyle.glow;
+          ctx.shadowBlur = 24 + motion.energy * 45;
+
+          // Recorte suave estilizado para integrar el personaje en la escena
+          ctx.beginPath();
+          ctx.roundRect(-drawW / 2, -drawH / 2, drawW, drawH, 28);
+          ctx.clip();
+          ctx.drawImage(charImg, -drawW / 2, -drawH / 2, drawW, drawH);
+
+          // Borde de luz cinematográfica (Rim Light)
+          ctx.strokeStyle = activeStyle.glow;
+          ctx.lineWidth = 3 + motion.energy * 4;
+          ctx.strokeRect(-drawW / 2, -drawH / 2, drawW, drawH);
+          ctx.restore();
+        } else {
+          // Silueta holográfica guía cuando aún no se seleccionó imagen
+          ctx.save();
+          ctx.translate(targetX, targetY);
+          ctx.strokeStyle = activeStyle.glow;
+          ctx.lineWidth = 3;
+          ctx.setLineDash([8, 6]);
+          ctx.beginPath();
+          ctx.arc(0, -10, 95, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = "rgba(255,255,255,0.85)";
+          ctx.font = "700 18px system-ui, sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("Sube una foto en el Paso 2 o elige un Personaje Demo", 0, 5);
+          ctx.restore();
+        }
+
+        // 3. PARTÍCULAS Y EFECTOS CINEMATOGRÁFICOS EN TIEMPO REAL
+        ctx.fillStyle = activeStyle.tint;
+        ctx.fillRect(0, 0, W, H);
+
+        particles.forEach((p) => {
+          p.x = (p.x + p.speedX + 1) % 1;
+          p.y = (p.y + p.speedY * (1 + motion.energy * 2.5) + 1) % 1;
+          const px = p.x * W;
+          const py = p.y * H;
+          const alpha = 0.35 + Math.sin(timeSec * 3 + p.phase) * 0.25;
+          ctx.fillStyle = activeStyle.glow;
+          ctx.globalAlpha = Math.max(0.1, alpha);
+          ctx.beginPath();
+          ctx.arc(px, py, p.size * (1 + motion.energy), 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+
+        // Viñeta de lente de cine
+        const vig = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.32, W / 2, H / 2, Math.max(W, H) * 0.72);
+        vig.addColorStop(0, "rgba(0,0,0,0)");
+        vig.addColorStop(1, "rgba(0,0,0,0.58)");
+        ctx.fillStyle = vig;
+        ctx.fillRect(0, 0, W, H);
+
+        ctx.restore();
       }
 
-      function updateOutputs() {
-        document.getElementById("omniPayloadOutput").textContent = JSON.stringify(
-          buildOmniPreview(),
-          null,
-          2,
-        );
-        document.getElementById("reaPayloadOutput").textContent = JSON.stringify(
-          buildReaReconstructedPayload(),
-          null,
-          2,
-        );
+      // Loop de previsualización en vivo en el monitor
+      function previewLoop(nowMs) {
+        if (!state.isRendering) {
+          renderCompositeFrame(nowMs * 0.001);
+        }
+        requestAnimationFrame(previewLoop);
+      }
+      requestAnimationFrame(previewLoop);
+
+      // GENERACIÓN GRATUITA DE VIDEO (SIN TOKEN)
+      async function generateFreeVideoLocally() {
+        state.isRendering = true;
+        generateBtn.disabled = true;
+        generateBtnText.textContent = "Renderizando Video HD Gratis...";
+        resultVideo.classList.remove("active");
+        downloadBar.classList.remove("active");
+        progressBanner.classList.add("active");
+        renderProgress.value = 0;
+        progressPercentText.textContent = "0%";
+
+        // Si el usuario aún no subió ni eligió imagen, cargamos automáticamente el Samurái Demo para que nunca falle
+        if (state.images.length === 0) {
+          progressStatusText.textContent = "Preparando personaje base automático...";
+          await createDemoCharacterPreset("samurai");
+        }
+
+        // Asegurar que el video fuente esté reproduciéndose desde el inicio si existe
+        if (state.sourceVideo?.videoEl) {
+          state.sourceVideo.videoEl.currentTime = 0;
+          await state.sourceVideo.videoEl.play().catch(() => {});
+        }
+
+        const fps = 30;
+        const durationSec = 5;
+        const totalFrames = fps * durationSec;
+
+        const stream = synthCanvas.captureStream(fps);
+        const mimeType = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
+          ? "video/webm;codecs=vp9"
+          : "video/webm";
+        const recorder = new MediaRecorder(stream, {
+          mimeType,
+          videoBitsPerSecond: 6_500_000,
+        });
+
+        const chunks = [];
+        recorder.ondataavailable = (ev) => {
+          if (ev.data && ev.data.size > 0) chunks.push(ev.data);
+        };
+
+        recorder.start();
+        progressStatusText.textContent = "Aplicando Motion Transfer y efectos visuales...";
+
+        for (let frame = 0; frame <= totalFrames; frame++) {
+          const tSec = frame / fps;
+          renderCompositeFrame(tSec);
+          const pct = Math.round((frame / totalFrames) * 100);
+          renderProgress.value = pct;
+          progressPercentText.textContent = `${pct}%`;
+          await new Promise((r) => setTimeout(r, 1000 / fps));
+        }
+
+        const renderedBlob = await new Promise((resolve) => {
+          recorder.onstop = () => resolve(new Blob(chunks, { type: "video/webm" }));
+          recorder.stop();
+        });
+
+        const localBlobUrl = URL.createObjectURL(renderedBlob);
+
+        // Guardar copia en la carpeta /outputs del servidor
+        const base64Video = await fileToBase64(renderedBlob);
+        let serverUrl = localBlobUrl;
+        try {
+          const saveRes = await fetch("/api/save-rendered-video", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ base64Data: base64Video, ext: "webm" }),
+          });
+          const saveData = await saveRes.json();
+          if (saveData.ok && saveData.videoUrl) {
+            serverUrl = saveData.videoUrl;
+            savedPathLabel.textContent = `Guardado automáticamente en ${saveData.videoUrl}`;
+          }
+        } catch {
+          // Si falla el guardado en disco, mantenemos el Blob URL del navegador
+        }
+
+        resultVideo.src = serverUrl;
+        resultVideo.classList.add("active");
+        await resultVideo.play().catch(() => {});
+
+        downloadVideoLink.href = serverUrl;
+        downloadVideoLink.download = `genjutsu_${Date.now()}.webm`;
+        progressBanner.classList.remove("active");
+        downloadBar.classList.add("active");
+
+        state.isRendering = false;
+        generateBtn.disabled = false;
+        generateBtnText.textContent = "Generar Video Gratis Ahora";
       }
 
-      function copyText(id) {
-        const text = document.getElementById(id).textContent;
-        navigator.clipboard.writeText(text);
-        document.getElementById("statusBanner").innerHTML =
-          "<strong>✅ JSON copiado al portapapeles.</strong>";
-      }
-
-      async function executeGeminiGeneration() {
-        const btn = document.getElementById("generateBtn");
-        const btnText = document.getElementById("generateBtnText");
-        const banner = document.getElementById("statusBanner");
-        const apiKey = document.getElementById("geminiApiKey").value.trim();
-        const engine = document.getElementById("geminiEngine").value;
-        const resolution = document.getElementById("resolutionSelect").value;
-        const aspectRatio = document.getElementById("aspectSelect").value;
-        const duration = document.getElementById("durationSelect").value || null;
-        const prompt = document.getElementById("promptInput").value;
-
-        btn.disabled = true;
-        btnText.textContent = "Procesando en Gemini API...";
-        banner.innerHTML = `⏳ Subiendo archivos a Google Files API y ejecutando <code>${engine}</code>... (Esto puede tardar entre 30s y 2 minutos según la resolución).`;
+      // GENERACIÓN OPCIONAL EN LA NUBE (GEMINI OMNI 1.1 FLASH / VEO 3.1)
+      async function generateCloudVideo(engine, apiKey) {
+        state.isRendering = true;
+        generateBtn.disabled = true;
+        generateBtnText.textContent = "Generando en Google Cloud...";
+        progressBanner.classList.add("active");
+        progressStatusText.textContent = `Procesando con ${engine}...`;
+        renderProgress.value = 35;
+        progressPercentText.textContent = "35%";
 
         try {
-          const resp = await fetch("/api/generate-gemini", {
+          const res = await fetch("/api/generate-gemini", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -880,37 +1871,180 @@
               engine,
               mode: state.mode,
               sceneMode: state.sceneMode,
-              prompt,
-              resolution,
-              aspectRatio,
-              duration,
+              prompt: promptTextarea.value,
+              aspectRatio: state.aspectRatio,
               sourceVideo: state.sourceVideo,
               images: state.images,
               locationMedia: state.locationMedia,
             }),
           });
-          const data = await resp.json();
+          const data = await res.json();
           if (!data.ok) {
-            throw new Error(data.error || "Error desconocido en la generación");
+            throw new Error(data.error || "Error en la API de Gemini.");
           }
 
-          state.lastInteractionId = data.interactionId || null;
-          if (data.interactionId) {
-            document.getElementById("interactionBadge").textContent =
-              `Interaction ID: ${data.interactionId}`;
-          }
+          resultVideo.src = data.videoUrl;
+          resultVideo.classList.add("active");
+          await resultVideo.play().catch(() => {});
 
-          banner.innerHTML = `✅ <strong>¡Video generado con éxito usando ${data.engine}!</strong> Guardado en <code>${data.outputPath}</code>`;
-          document.getElementById("videoStage").innerHTML = `
-            <video src="${data.videoUrl}" controls autoplay loop playsinline></video>
-          `;
+          downloadVideoLink.href = data.videoUrl;
+          downloadVideoLink.download = `genjutsu_cloud_${Date.now()}.mp4`;
+          savedPathLabel.textContent = `Generado con ${data.engine} en ${data.videoUrl}`;
+          downloadBar.classList.add("active");
         } catch (err) {
-          banner.innerHTML = `❌ <strong>Error:</strong> ${err.message}`;
+          alert(`Aviso del modo Cloud: ${err.message}\n\nSe usará el Motor Gratuito Integrado automáticamente.`);
+          await generateFreeVideoLocally();
+          return;
         } finally {
-          btn.disabled = false;
-          btnText.textContent = "Generar Video con Gemini / Veo";
+          progressBanner.classList.remove("active");
+          state.isRendering = false;
+          generateBtn.disabled = false;
+          generateBtnText.textContent = "Generar Video Gratis Ahora";
         }
       }
+
+      // EVENT LISTENERS (Sin inline onclick)
+      videoFileInput.addEventListener("change", (e) => {
+        if (e.target.files?.[0]) handleVideoFile(e.target.files[0]);
+      });
+
+      imageFileInput.addEventListener("change", (e) => {
+        if (e.target.files?.length) handleImageFiles(e.target.files);
+      });
+
+      locationFileInput.addEventListener("change", async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const url = URL.createObjectURL(file);
+        const imgEl = new Image();
+        imgEl.src = url;
+        await new Promise((r) => {
+          imgEl.onload = r;
+          imgEl.onerror = r;
+        });
+        const base64 = await fileToBase64(file);
+        const up = await uploadBufferAsBase64(file.name, file.type || "image/png", base64);
+        state.locationMedia = {
+          name: file.name,
+          url,
+          localPath: up.localPath || null,
+          mimeType: file.type || "image/png",
+          imgEl,
+        };
+        locationStatusText.textContent = `Fondo listo: ${file.name}`;
+        locationStatusText.style.color = "var(--accent)";
+      });
+
+      // Drag and Drop para la tarjeta de Video
+      videoDropCard.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        videoDropCard.classList.add("dragover");
+      });
+      videoDropCard.addEventListener("dragleave", () => videoDropCard.classList.remove("dragover"));
+      videoDropCard.addEventListener("drop", (e) => {
+        e.preventDefault();
+        videoDropCard.classList.remove("dragover");
+        const file = e.dataTransfer?.files?.[0];
+        if (file) handleVideoFile(file);
+      });
+
+      // Drag and Drop para la tarjeta de Imagen
+      imageDropCard.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        imageDropCard.classList.add("dragover");
+      });
+      imageDropCard.addEventListener("dragleave", () => imageDropCard.classList.remove("dragover"));
+      imageDropCard.addEventListener("drop", (e) => {
+        e.preventDefault();
+        imageDropCard.classList.remove("dragover");
+        if (e.dataTransfer?.files?.length) handleImageFiles(e.dataTransfer.files);
+      });
+
+      clearVideoBtn.addEventListener("click", () => {
+        state.sourceVideo = null;
+        videoFileInput.value = "";
+        updateVideoCardUI();
+      });
+
+      clearImagesBtn.addEventListener("click", () => {
+        state.images = [];
+        imageFileInput.value = "";
+        updateImageCardUI();
+      });
+
+      loadDemoVideoActionBtn.addEventListener("click", () => {
+        loadDemoDrivingVideo();
+      });
+
+      document.querySelectorAll("[data-demo-char]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          createDemoCharacterPreset(btn.getAttribute("data-demo-char"));
+        });
+      });
+
+      document.querySelectorAll('input[name="mode"]').forEach((radio) => {
+        radio.addEventListener("change", (e) => {
+          state.mode = e.target.value;
+        });
+      });
+
+      document.querySelectorAll('input[name="visualStyle"]').forEach((radio) => {
+        radio.addEventListener("change", (e) => {
+          state.visualStyle = e.target.value;
+        });
+      });
+
+      document.querySelectorAll('input[name="sceneMode"]').forEach((radio) => {
+        radio.addEventListener("change", (e) => {
+          state.sceneMode = e.target.value;
+          locationDrawer.classList.toggle("active", state.sceneMode === "location");
+        });
+      });
+
+      document.querySelectorAll('input[name="aspectRatio"]').forEach((radio) => {
+        radio.addEventListener("change", (e) => {
+          state.aspectRatio = e.target.value;
+          if (state.aspectRatio === "9:16") {
+            viewportFrame.classList.add("vertical");
+            synthCanvas.width = 720;
+            synthCanvas.height = 1280;
+          } else {
+            viewportFrame.classList.remove("vertical");
+            synthCanvas.width = 1280;
+            synthCanvas.height = 720;
+          }
+        });
+      });
+
+      document.querySelectorAll("[data-insert]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const token = btn.getAttribute("data-insert");
+          promptTextarea.value = `${promptTextarea.value.trim()} ${token} `.trimStart();
+          promptTextarea.focus();
+        });
+      });
+
+      backToCanvasBtn.addEventListener("click", () => {
+        resultVideo.pause();
+        resultVideo.classList.remove("active");
+      });
+
+      studioForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (state.isRendering) return;
+
+        const chosenEngine = engineSelect.value;
+        const apiKey = apiKeyInput.value.trim();
+
+        if (chosenEngine !== "free-local" && apiKey) {
+          await generateCloudVideo(chosenEngine, apiKey);
+        } else {
+          await generateFreeVideoLocally();
+        }
+      });
+
+      // Cargar un personaje demo inicial al abrir para que el monitor se vea vivo de inmediato
+      createDemoCharacterPreset("samurai");
     </script>
   </body>
 </html>
