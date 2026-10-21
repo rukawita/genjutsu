@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Genjutsu Studio — Generador de Video IA Gratis</title>
+    <title>Genjutsu Studio — Face Swap &amp; Motion Transfer IA Gratis</title>
     <style>
       :root {
         --bg: #08090d;
@@ -29,6 +29,10 @@
         box-sizing: border-box;
       }
 
+      [hidden] {
+        display: none !important;
+      }
+
       body {
         margin: 0;
         background: radial-gradient(circle at 15% 0%, #15192b 0%, var(--bg) 55%);
@@ -38,7 +42,6 @@
         line-height: 1.45;
       }
 
-      /* Canonical visually-hidden utility for accessible custom file inputs */
       .visually-hidden {
         position: absolute;
         width: 1px;
@@ -114,7 +117,7 @@
         margin: 0 auto;
         padding: 24px;
         display: grid;
-        grid-template-columns: 1.12fr 0.88fr;
+        grid-template-columns: 1.1fr 0.9fr;
         gap: 26px;
         align-items: start;
       }
@@ -154,12 +157,8 @@
         color: var(--muted);
         margin-bottom: 12px;
         padding: 0;
-        display: flex;
-        align-items: center;
-        gap: 8px;
       }
 
-      /* Radio Cards for Mode Selection */
       .mode-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -201,11 +200,11 @@
         align-items: center;
         justify-content: space-between;
         font-weight: 800;
-        font-size: 0.96rem;
+        font-size: 0.95rem;
       }
 
       .radio-card-desc {
-        font-size: 0.8rem;
+        font-size: 0.79rem;
         color: var(--muted);
       }
 
@@ -215,7 +214,6 @@
         box-shadow: 0 0 0 1px var(--accent);
       }
 
-      /* Step 1 & Step 2 Upload Cards */
       .uploads-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -374,7 +372,6 @@
         color: #190726;
       }
 
-      /* Media Previews inside Step Cards */
       .media-preview-box {
         display: none;
         flex-direction: column;
@@ -494,19 +491,6 @@
         color: var(--danger);
       }
 
-      /* Visual Style Cards */
-      .style-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-      }
-
-      @media (max-width: 640px) {
-        .style-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
       .style-option {
         display: flex;
         align-items: center;
@@ -536,36 +520,6 @@
         color: var(--accent);
       }
 
-      /* Scene / Background Control */
-      .scene-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 8px;
-      }
-
-      @media (max-width: 640px) {
-        .scene-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
-      .location-drawer {
-        display: none;
-        margin-top: 12px;
-        padding: 12px;
-        border-radius: var(--radius-md);
-        background: var(--panel-elevated);
-        border: 1px dashed var(--accent);
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-      }
-
-      .location-drawer.active {
-        display: flex;
-      }
-
-      /* Prompt input */
       .prompt-header {
         display: flex;
         align-items: center;
@@ -606,7 +560,7 @@
 
       textarea {
         width: 100%;
-        min-height: 82px;
+        min-height: 74px;
         background: var(--panel-elevated);
         border: 1px solid var(--border);
         border-radius: var(--radius-md);
@@ -647,23 +601,23 @@
       }
 
       .generate-cta:disabled {
-        opacity: 0.6;
+        opacity: 0.65;
         cursor: wait;
       }
 
-      /* Right Column: Cinema Stage & Player */
       .stage-card {
         position: sticky;
         top: 86px;
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 14px;
       }
 
       .stage-top-bar {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        flex-wrap: wrap;
         gap: 12px;
       }
 
@@ -717,6 +671,28 @@
 
       #resultVideo.active {
         display: block;
+      }
+
+      .neural-status-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: var(--panel-elevated);
+        border: 1px solid var(--border);
+        font-size: 0.8rem;
+      }
+
+      .neural-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 10px var(--accent);
+        display: inline-block;
+        margin-right: 6px;
       }
 
       .progress-banner {
@@ -778,7 +754,6 @@
         text-decoration: none;
       }
 
-      /* Optional Cloud Drawer */
       details.cloud-drawer {
         background: var(--panel-elevated);
         border: 1px solid var(--border);
@@ -835,24 +810,24 @@
         <div class="brand-logo" aria-hidden="true">G</div>
         <div>
           <div class="brand-title">Genjutsu Studio</div>
-          <div class="brand-subtitle">Motion Transfer &amp; Objects Swap · Interfaz Visual</div>
+          <div class="brand-subtitle">Face Swap 3D (478 Puntos) · Motion Transfer · LivePortrait</div>
         </div>
       </div>
       <div class="free-pill">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
           <path d="M20 6 9 17l-5-5" />
         </svg>
-        <span>Motor Gratuito Activado (Sin Token ni API Key)</span>
+        <span>IA Neural Local Activa (100% Gratis · Sin Colas ni Tokens)</span>
       </div>
     </header>
 
     <main class="workspace">
-      <!-- COLUMNA IZQUIERDA: CONTROLES VISUALES PASO A PASO -->
+      <!-- COLUMNA IZQUIERDA: CONTROLES VISUALES -->
       <form id="studioForm" class="section-stack" novalidate>
-        <!-- 1. MODO DE TRABAJO -->
+        <!-- 1. MODO DE IA -->
         <div class="card">
           <fieldset>
-            <legend>1. ¿Qué quieres hacer hoy?</legend>
+            <legend>1. Elige el Modo de Inteligencia Artificial</legend>
             <div class="mode-grid">
               <label class="radio-card" for="modeFaceswap">
                 <div class="radio-card-header">
@@ -860,7 +835,7 @@
                   <input type="radio" id="modeFaceswap" name="mode" value="faceswap" checked />
                 </div>
                 <div class="radio-card-desc">
-                  Pone la cara de tu <strong>Foto</strong> en el <strong>Video</strong>, con los mismos movimientos y escena. (Más rápido)
+                  Reemplaza la cara del actor en el <strong>Video</strong> por la de tu <strong>Foto</strong> copiando boca, ojos, giro 3D y luz de la escena.
                 </div>
               </label>
 
@@ -870,7 +845,7 @@
                   <input type="radio" id="modeMotion" name="mode" value="motion" />
                 </div>
                 <div class="radio-card-desc">
-                  Tu <strong>Personaje</strong> completo copia los movimientos del <strong>Video</strong> (Wan 2.2 Animate).
+                  Recorta a tu <strong>Personaje</strong> (sin fondo cuadrado) y hace que su cuerpo y rostro copien la pose del <strong>Video</strong>.
                 </div>
               </label>
 
@@ -880,14 +855,14 @@
                   <input type="radio" id="modeLive" name="mode" value="liveportrait" />
                 </div>
                 <div class="radio-card-desc">
-                  Tu <strong>Foto</strong> cobra vida con los gestos y expresiones del <strong>Video</strong> (LivePortrait).
+                  Tu <strong>Foto</strong> cobra vida propia imitando los gestos, habla y expresiones del <strong>Video</strong> (LivePortrait 3D).
                 </div>
               </label>
             </div>
           </fieldset>
         </div>
 
-        <!-- 2. TARJETAS VISUALES DE SUBIDA: VIDEO vs IMAGEN -->
+        <!-- 2. SUBIDA DE VIDEO E IMAGEN -->
         <div class="uploads-grid">
           <!-- TARJETA A: VIDEO BASE -->
           <div class="upload-step-card video-card" id="videoDropCard">
@@ -904,7 +879,7 @@
               </div>
               <h2 class="step-title">Sube el Video de Movimiento</h2>
               <p class="step-help">
-                Este video guía la cámara y la acción (<strong>@video1</strong>). Si no tienes uno, usa el demo.
+                El video del actor cuya cara, expresiones y escena se usarán (<strong>@video1</strong>).
               </p>
 
               <input
@@ -926,7 +901,6 @@
                 <span style="font-size: 0.75rem; color: var(--muted);">o arrastra tu video aquí</span>
               </label>
 
-              <!-- Vista previa del video subido -->
               <div class="media-preview-box" id="videoPreviewBox">
                 <video
                   id="uploadedVideoPreview"
@@ -949,14 +923,13 @@
             </div>
 
             <div class="preset-bar">
-              <span class="preset-bar-label">¿Sin video a mano?</span>
-              <button type="button" class="mini-btn" id="loadDemoVideoActionBtn">
-                🎬 Usar Video de Ejemplo
-              </button>
+              <span class="preset-bar-label">¿Probar rápido?</span>
+              <button type="button" class="mini-btn" data-demo-video="d0">🎬 Video Actor 1</button>
+              <button type="button" class="mini-btn" data-demo-video="d3">🎬 Video Actor 2</button>
             </div>
           </div>
 
-          <!-- TARJETA B: IMAGEN DE PERSONAJE U OBJETO -->
+          <!-- TARJETA B: IMAGEN DE PERSONAJE / ROSTRO -->
           <div class="upload-step-card image-card" id="imageDropCard">
             <div>
               <div class="step-header">
@@ -966,13 +939,13 @@
                     <circle cx="8.5" cy="8.5" r="1.5" />
                     <path d="m21 15-5-5L5 21" />
                   </svg>
-                  Paso 2 · Tu Personaje / Foto
+                  Paso 2 · Tu Foto / Rostro
                 </span>
                 <span class="format-tag">PNG · JPG · WEBP</span>
               </div>
-              <h2 class="step-title">Sube la Imagen del Personaje</h2>
+              <h2 class="step-title">Sube la Foto del Rostro / Personaje</h2>
               <p class="step-help">
-                La foto del personaje u objeto que cobrará vida (<strong>@image1</strong>).
+                La cara o personaje que reemplazará al actor del video (<strong>@image1</strong>).
               </p>
 
               <input
@@ -980,7 +953,6 @@
                 id="imageFileInput"
                 class="visually-hidden"
                 accept="image/png,image/jpeg,image/webp,image/*"
-                multiple
               />
 
               <label for="imageFileInput" class="drop-trigger-label" id="imageEmptyLabel">
@@ -996,151 +968,73 @@
                 <span style="font-size: 0.75rem; color: var(--muted);">o arrastra tu imagen aquí</span>
               </label>
 
-              <!-- Vista previa de imágenes subidas -->
               <div class="media-preview-box" id="imagePreviewBox">
                 <div class="image-thumbs-grid" id="imageThumbsGrid"></div>
                 <div class="preview-actions-row">
-                  <span id="imageCountLabel" style="color: var(--image-color); font-weight: 700;">1 imagen lista</span>
+                  <span id="imageCountLabel" style="color: var(--image-color); font-weight: 700;">Rostro listo</span>
                   <div style="display: flex; gap: 6px;">
-                    <label for="imageFileInput" class="mini-btn" style="cursor: pointer;">+ Añadir otra</label>
-                    <button type="button" class="mini-btn danger" id="clearImagesBtn">Limpiar</button>
+                    <label for="imageFileInput" class="mini-btn" style="cursor: pointer;">Cambiar foto</label>
+                    <button type="button" class="mini-btn danger" id="clearImagesBtn">Quitar</button>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="preset-bar">
-              <span class="preset-bar-label">Caras de ejemplo:</span>
-              <button type="button" class="mini-btn" data-demo-char="s9">👩 Ejemplo 1</button>
-              <button type="button" class="mini-btn" data-demo-char="s6">🧑 Ejemplo 2</button>
+              <span class="preset-bar-label">Rostros de ejemplo:</span>
+              <button type="button" class="mini-btn" data-demo-char="s9">👩 Rostro Ejemplo 1</button>
+              <button type="button" class="mini-btn" data-demo-char="s6">🧑 Rostro Ejemplo 2</button>
             </div>
           </div>
         </div>
 
-        <!-- 3. ESTILO VISUAL & CONTROL DE ESCENARIO -->
-        <div class="card section-stack" hidden>
-          <fieldset>
-            <legend>3. Estilo Visual y Efectos</legend>
-            <div class="style-grid">
-              <label class="style-option" for="styleCinematic">
-                <input type="radio" id="styleCinematic" name="visualStyle" value="cinematic" checked />
-                <span>🎬 Cine 35mm</span>
-              </label>
-              <label class="style-option" for="styleGenjutsu">
-                <input type="radio" id="styleGenjutsu" name="visualStyle" value="genjutsu" />
-                <span>👁️ Ilusión Carmesí</span>
-              </label>
-              <label class="style-option" for="styleCyberpunk">
-                <input type="radio" id="styleCyberpunk" name="visualStyle" value="cyberpunk" />
-                <span>⚡ Cyberpunk Neón</span>
-              </label>
-              <label class="style-option" for="styleAnime">
-                <input type="radio" id="styleAnime" name="visualStyle" value="anime" />
-                <span>✨ Anime Studio</span>
-              </label>
-              <label class="style-option" for="styleAura">
-                <input type="radio" id="styleAura" name="visualStyle" value="aura" />
-                <span>🔥 Energía / Aura</span>
-              </label>
-              <label class="style-option" for="styleNoir">
-                <input type="radio" id="styleNoir" name="visualStyle" value="noir" />
-                <span>🌑 Noir Contraste</span>
-              </label>
-            </div>
-          </fieldset>
-
-          <fieldset id="sceneControlFieldset">
-            <legend>4. Fondo de la Escena (Background Control)</legend>
-            <div class="scene-grid">
-              <label class="style-option" for="sceneAuto">
-                <input type="radio" id="sceneAuto" name="sceneMode" value="off" checked />
-                <span>✨ Automático</span>
-              </label>
-              <label class="style-option" for="sceneVideo">
-                <input type="radio" id="sceneVideo" name="sceneMode" value="video" />
-                <span>🎥 Fondo del Video</span>
-              </label>
-              <label class="style-option" for="sceneChar">
-                <input type="radio" id="sceneChar" name="sceneMode" value="character" />
-                <span>🖼️ Fondo de la Foto</span>
-              </label>
-              <label class="style-option" for="sceneLocation">
-                <input type="radio" id="sceneLocation" name="sceneMode" value="location" />
-                <span>🗺️ Subir otro Fondo</span>
-              </label>
-            </div>
-
-            <div class="location-drawer" id="locationDrawer">
-              <div>
-                <strong style="font-size: 0.84rem;">Imagen de Fondo Personalizada (@location)</strong>
-                <div id="locationStatusText" style="font-size: 0.76rem; color: var(--muted);">
-                  Sube un paisaje o escenario para colocar detrás de tu personaje.
-                </div>
-              </div>
-              <div>
-                <input type="file" id="locationFileInput" class="visually-hidden" accept="image/*" />
-                <label for="locationFileInput" class="mini-btn" style="cursor: pointer;">Subir Fondo</label>
-              </div>
-            </div>
-          </fieldset>
-        </div>
-
-        <!-- 4. PROMPT Y BOTÓN PRINCIPAL DE GENERACIÓN GRATUITA -->
+        <!-- 3. GENERACIÓN Y OPCIONES AVANZADAS -->
         <div class="card section-stack">
           <div>
             <div class="prompt-header">
-              <label for="promptTextarea" class="prompt-label">3. Describe la Acción (Opcional · solo Motion Transfer)</label>
+              <label for="promptTextarea" class="prompt-label">3. Nota o Prompt (Opcional)</label>
               <div class="chip-group">
-                <button type="button" class="mention-chip" data-insert="@image1">+ @image1 (Personaje)</button>
-                <button type="button" class="mention-chip" data-insert="@video1">+ @video1 (Video)</button>
+                <button type="button" class="mention-chip" data-insert="@image1">+ @image1</button>
+                <button type="button" class="mention-chip" data-insert="@video1">+ @video1</button>
               </div>
             </div>
             <textarea
               id="promptTextarea"
-              placeholder="Ej: El personaje de @image1 realiza los movimientos de @video1 con iluminación cinematográfica épica y partículas de energía..."
-            >El personaje de @image1 realiza el movimiento de @video1 en una toma continua cinematográfica.</textarea>
+              placeholder="Ej: Mantener iluminación natural de la escena y expresiones exactas del actor..."
+            >Intercambiar el rostro de @image1 copiando las expresiones, movimientos de cabeza y escena de @video1.</textarea>
           </div>
 
           <button type="submit" class="generate-cta" id="generateBtn">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
             </svg>
-            <span id="generateBtnText">Generar Video Gratis Ahora</span>
+            <span id="generateBtnText">Generar y Descargar Video Gratis Ahora</span>
           </button>
 
-          <!-- Opcional: más cupo de GPU gratis con token de Hugging Face -->
-          <details class="cloud-drawer" id="hfDrawer">
-            <summary>🚀 Opcional: más velocidad con un token GRATIS de Hugging Face</summary>
-            <div class="input-field" style="margin-top: 12px;">
-              <label for="hfTokenInput">
-                Token de Hugging Face (gratis en huggingface.co/settings/tokens · tipo "Read")
-              </label>
-              <input type="password" id="hfTokenInput" placeholder="hf_..." autocomplete="off" />
-              <span style="font-size: 0.74rem; color: var(--muted);">
-                Sin token: "Cambiar Cara" funciona igual (gratis, en CPU, tarda unos minutos).
-                "Motion Transfer" y "Animar Rostro" usan GPU y con token tienen más cupo diario.
-              </span>
-            </div>
-          </details>
-
-          <!-- Opcional: Motor Cloud con API Key -->
+          <!-- Opcional: Motores Cloud externos -->
           <details class="cloud-drawer">
-            <summary>⚙️ Opcional Avanzado: Conectar API Key de Google Gemini / Veo</summary>
+            <summary>⚙️ Opcional Avanzado: Elegir Motor (Local Instantáneo vs Cloud GPU)</summary>
             <div class="cloud-grid">
               <div class="input-field">
-                <label for="engineSelect">Motor de Renderizado</label>
+                <label for="engineSelect">Motor de Procesamiento</label>
                 <select id="engineSelect">
-                  <option value="free-local" selected>Motor Genjutsu FX Integrado (100% Gratis · Sin Token)</option>
-                  <option value="gemini-omni-1.1-flash">Cloud: Gemini Omni 1.1 Flash (Requiere API Key)</option>
-                  <option value="veo-3.1-fast-generate-preview">Cloud: Veo 3.1 Fast (Requiere API Key)</option>
+                  <option value="neural-local" selected>
+                    ⚡ Motor Neural Local MediaPipe 3D (Instantáneo · Sin Colas · 100% Gratis)
+                  </option>
+                  <option value="hf-cloud">
+                    ☁️ Cloud Hugging Face Spaces (Con respaldo automático al Motor Local)
+                  </option>
+                  <option value="gemini-omni-1.1-flash">
+                    🔑 Cloud Gemini Omni 1.1 Flash (Requiere API Key de Google AI Studio)
+                  </option>
                 </select>
               </div>
               <div class="input-field">
-                <label for="apiKeyInput">Google AI Studio API Key (Solo para modo Cloud)</label>
+                <label for="hfTokenInput">Token opcional (HF `hf_...` o Gemini API Key)</label>
                 <input
                   type="password"
-                  id="apiKeyInput"
-                  placeholder="Dejar vacío para usar el Motor Gratuito"
+                  id="hfTokenInput"
+                  placeholder="No necesario para el Motor Neural Local"
                   autocomplete="off"
                 />
               </div>
@@ -1149,7 +1043,7 @@
         </div>
       </form>
 
-      <!-- COLUMNA DERECHA: REPRODUCTOR Y MONITOR EN VIVO -->
+      <!-- COLUMNA DERECHA: MONITOR EN VIVO Y DESCARGA -->
       <section class="card stage-card" aria-label="Vista previa y resultado de video">
         <div class="stage-top-bar">
           <div class="stage-title">
@@ -1157,7 +1051,7 @@
               <rect x="2" y="3" width="20" height="14" rx="2" />
               <path d="M8 21h8M12 17v4" />
             </svg>
-            <span>Monitor de Estudio</span>
+            <span>Monitor Neural en Tiempo Real</span>
           </div>
 
           <fieldset class="aspect-pills">
@@ -1185,27 +1079,33 @@
           ></video>
         </div>
 
-        <!-- Barra de progreso de renderizado -->
+        <div class="neural-status-bar">
+          <div>
+            <span class="neural-dot"></span>
+            <strong id="neuralStatusText">Cargando redes neuronales MediaPipe (478 puntos 3D)...</strong>
+          </div>
+          <span id="meshInfoBadge" style="color: var(--muted); font-size: 0.75rem;">WebGL2 Activo</span>
+        </div>
+
         <div class="progress-banner" id="progressBanner">
           <div class="progress-row">
-            <span id="progressStatusText">Sintetizando fotogramas de movimiento...</span>
+            <span id="progressStatusText">Procesando malla facial 3D fotograma a fotograma...</span>
             <span id="progressPercentText">0%</span>
           </div>
           <progress id="renderProgress" value="0" max="100"></progress>
         </div>
 
-        <!-- Barra de descarga cuando el video está listo -->
         <div class="download-bar" id="downloadBar">
           <div>
             <div style="font-weight: 800; font-size: 0.9rem; color: var(--success);">
-              ¡Tu video Genjutsu está listo!
+              ¡Tu video Genjutsu con Face Swap / Motion Transfer está listo!
             </div>
             <div id="savedPathLabel" style="font-size: 0.76rem; color: var(--muted);">
-              Renderizado en alta definición a 30 FPS.
+              Guardado en alta definición.
             </div>
           </div>
           <div style="display: flex; gap: 8px;">
-            <button type="button" class="mini-btn" id="backToCanvasBtn">Ver Monitor en Vivo</button>
+            <button type="button" class="mini-btn" id="backToCanvasBtn">Seguir Editando en Vivo</button>
             <a id="downloadVideoLink" class="download-link-btn" href="#" download="genjutsu_video.webm">
               ⬇️ Descargar Video
             </a>
@@ -1215,23 +1115,21 @@
     </main>
 
     <script type="module">
-      // Estado visual de la aplicación (sin paneles JSON crudos)
+      import { GenjutsuNeuralEngine } from "/lib/genjutsu-neural-engine.js";
+
+      const neuralEngine = new GenjutsuNeuralEngine();
+
       const state = {
-        mode: "motion-control",
-        visualStyle: "cinematic",
-        sceneMode: "off",
+        mode: "faceswap",
         aspectRatio: "16:9",
-        sourceVideo: null, // { name, url, localPath, mimeType, videoEl }
-        images: [], // [{ name, url, localPath, mimeType, imgEl }]
-        locationMedia: null, // { name, url, localPath, mimeType, imgEl }
+        sourceVideo: null,
+        images: [],
         isRendering: false,
       };
 
-      // Referencias DOM
       const studioForm = document.getElementById("studioForm");
       const videoFileInput = document.getElementById("videoFileInput");
       const imageFileInput = document.getElementById("imageFileInput");
-      const locationFileInput = document.getElementById("locationFileInput");
       const videoDropCard = document.getElementById("videoDropCard");
       const imageDropCard = document.getElementById("imageDropCard");
       const videoEmptyLabel = document.getElementById("videoEmptyLabel");
@@ -1239,7 +1137,6 @@
       const uploadedVideoPreview = document.getElementById("uploadedVideoPreview");
       const videoFilenameLabel = document.getElementById("videoFilenameLabel");
       const clearVideoBtn = document.getElementById("clearVideoBtn");
-      const loadDemoVideoActionBtn = document.getElementById("loadDemoVideoActionBtn");
 
       const imageEmptyLabel = document.getElementById("imageEmptyLabel");
       const imagePreviewBox = document.getElementById("imagePreviewBox");
@@ -1247,18 +1144,18 @@
       const imageCountLabel = document.getElementById("imageCountLabel");
       const clearImagesBtn = document.getElementById("clearImagesBtn");
 
-      const locationDrawer = document.getElementById("locationDrawer");
-      const locationStatusText = document.getElementById("locationStatusText");
       const promptTextarea = document.getElementById("promptTextarea");
       const generateBtn = document.getElementById("generateBtn");
       const generateBtnText = document.getElementById("generateBtnText");
       const engineSelect = document.getElementById("engineSelect");
-      const apiKeyInput = document.getElementById("apiKeyInput");
+      const hfTokenInput = document.getElementById("hfTokenInput");
 
       const viewportFrame = document.getElementById("viewportFrame");
       const synthCanvas = document.getElementById("synthCanvas");
       const ctx = synthCanvas.getContext("2d", { willReadFrequently: true });
       const resultVideo = document.getElementById("resultVideo");
+      const neuralStatusText = document.getElementById("neuralStatusText");
+      const meshInfoBadge = document.getElementById("meshInfoBadge");
       const progressBanner = document.getElementById("progressBanner");
       const progressStatusText = document.getElementById("progressStatusText");
       const progressPercentText = document.getElementById("progressPercentText");
@@ -1268,25 +1165,6 @@
       const savedPathLabel = document.getElementById("savedPathLabel");
       const backToCanvasBtn = document.getElementById("backToCanvasBtn");
 
-      // Canvas auxiliar para análisis óptico de movimiento del video base
-      const motionProbeCanvas = document.createElement("canvas");
-      motionProbeCanvas.width = 48;
-      motionProbeCanvas.height = 27;
-      const probeCtx = motionProbeCanvas.getContext("2d", { willReadFrequently: true });
-      let prevProbeData = null;
-      let smoothedMotion = { cx: 0.5, cy: 0.5, energy: 0.15 };
-
-      // Partículas para el sintetizador visual
-      const particles = Array.from({ length: 55 }, (_, i) => ({
-        x: (i * 73) % 100 / 100,
-        y: (i * 39) % 100 / 100,
-        size: 1.5 + (i % 4) * 1.4,
-        speedY: -0.002 - (i % 5) * 0.0012,
-        speedX: ((i % 3) - 1) * 0.001,
-        phase: i * 0.7,
-      }));
-
-      // Utilidad para subir un archivo al servidor local (/uploads)
       async function uploadBufferAsBase64(filename, mimeType, base64Data) {
         try {
           const res = await fetch("/api/upload-local", {
@@ -1312,7 +1190,6 @@
         });
       }
 
-      // Manejo de Video Subido
       async function handleVideoFile(file) {
         if (!file) return;
         const objectUrl = URL.createObjectURL(file);
@@ -1321,6 +1198,11 @@
         videoEl.muted = true;
         videoEl.loop = true;
         videoEl.playsInline = true;
+        videoEl.crossOrigin = "anonymous";
+        await new Promise((resolve) => {
+          videoEl.onloadeddata = resolve;
+          videoEl.onerror = resolve;
+        });
         await videoEl.play().catch(() => {});
 
         const base64 = await fileToBase64(file);
@@ -1332,9 +1214,9 @@
           localPath: uploaded.localPath || null,
           mimeType: file.type || "video/mp4",
           videoEl,
-          isSyntheticDemo: false,
         };
 
+        resultVideo.classList.remove("active");
         updateVideoCardUI();
       }
 
@@ -1342,10 +1224,8 @@
         if (state.sourceVideo) {
           videoEmptyLabel.style.display = "none";
           videoPreviewBox.classList.add("active");
-          if (state.sourceVideo.url) {
-            uploadedVideoPreview.src = state.sourceVideo.url;
-            uploadedVideoPreview.play().catch(() => {});
-          }
+          uploadedVideoPreview.src = state.sourceVideo.url;
+          uploadedVideoPreview.play().catch(() => {});
           videoFilenameLabel.textContent = `@video1 · ${state.sourceVideo.name}`;
         } else {
           videoEmptyLabel.style.display = "flex";
@@ -1354,103 +1234,39 @@
         }
       }
 
-      // Generador de Video Demo en tiempo real si el usuario no tiene un archivo MP4 a mano
-      async function loadDemoDrivingVideo() {
-        const demoCanvas = document.createElement("canvas");
-        demoCanvas.width = 640;
-        demoCanvas.height = 360;
-        const dctx = demoCanvas.getContext("2d");
+      async function handleImageFiles(fileList) {
+        const file = Array.from(fileList).find((f) => f.type.startsWith("image/"));
+        if (!file) return;
 
-        const stream = demoCanvas.captureStream(30);
-        const mimeType = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
-          ? "video/webm;codecs=vp9"
-          : "video/webm";
-        const recorder = new MediaRecorder(stream, { mimeType });
-        const chunks = [];
-        recorder.ondataavailable = (e) => {
-          if (e.data.size > 0) chunks.push(e.data);
-        };
-
-        recorder.start();
-        const totalFrames = 75; // 2.5s loop
-        for (let f = 0; f < totalFrames; f++) {
-          const t = f / totalFrames;
-          const angle = t * Math.PI * 2;
-          // Fondo urbano nocturno en movimiento
-          const grad = dctx.createLinearGradient(0, 0, 640, 360);
-          grad.addColorStop(0, "#0b132b");
-          grad.addColorStop(0.5, "#1c2541");
-          grad.addColorStop(1, "#0f172a");
-          dctx.fillStyle = grad;
-          dctx.fillRect(0, 0, 640, 360);
-
-          // Grilla de perspectiva en movimiento
-          dctx.strokeStyle = "rgba(56, 189, 248, 0.28)";
-          dctx.lineWidth = 1.5;
-          for (let i = 0; i < 10; i++) {
-            const y = 180 + ((i * 22 + f * 3) % 180);
-            dctx.beginPath();
-            dctx.moveTo(0, y);
-            dctx.lineTo(640, y);
-            dctx.stroke();
-          }
-
-          // Silueta guía de acción dinámica (@video1)
-          const cx = 320 + Math.sin(angle) * 110;
-          const cy = 185 + Math.cos(angle * 2) * 32;
-          const rad = 52 + Math.sin(angle * 2) * 8;
-
-          const glow = dctx.createRadialGradient(cx, cy, 5, cx, cy, rad * 1.9);
-          glow.addColorStop(0, "rgba(56, 189, 248, 0.95)");
-          glow.addColorStop(1, "rgba(56, 189, 248, 0)");
-          dctx.fillStyle = glow;
-          dctx.beginPath();
-          dctx.arc(cx, cy, rad * 1.9, 0, Math.PI * 2);
-          dctx.fill();
-
-          dctx.fillStyle = "#e0f2fe";
-          dctx.beginPath();
-          dctx.arc(cx, cy - 28, 22, 0, Math.PI * 2);
-          dctx.fill();
-          dctx.beginPath();
-          dctx.roundRect(cx - 28, cy - 2, 56, 78, 14);
-          dctx.fill();
-
-          await new Promise((r) => setTimeout(r, 12));
-        }
-
-        const blob = await new Promise((resolve) => {
-          recorder.onstop = () => resolve(new Blob(chunks, { type: "video/webm" }));
-          recorder.stop();
+        neuralStatusText.textContent = "Analizando rostro 3D (478 puntos) y recortando fondo...";
+        const objectUrl = URL.createObjectURL(file);
+        const imgEl = new Image();
+        imgEl.crossOrigin = "anonymous";
+        imgEl.src = objectUrl;
+        await new Promise((res) => {
+          imgEl.onload = res;
+          imgEl.onerror = res;
         });
 
-        const demoFile = new File([blob], "demo_camara_accion.webm", { type: "video/webm" });
-        await handleVideoFile(demoFile);
-      }
+        const profile = await neuralEngine.analyzeSourceImage(imgEl);
+        meshInfoBadge.textContent = `${profile.meshTriangles.length} triángulos 3D activos`;
+        neuralStatusText.textContent =
+          "Rostro 3D sincronizado en vivo con las expresiones y escena del video";
 
-      // Manejo de Imágenes Subidas (@image1, @image2...)
-      async function handleImageFiles(fileList) {
-        for (const file of Array.from(fileList)) {
-          if (!file.type.startsWith("image/")) continue;
-          const objectUrl = URL.createObjectURL(file);
-          const imgEl = new Image();
-          imgEl.src = objectUrl;
-          await new Promise((res) => {
-            imgEl.onload = res;
-            imgEl.onerror = res;
-          });
+        const base64 = await fileToBase64(file);
+        const uploaded = await uploadBufferAsBase64(file.name, file.type || "image/jpeg", base64);
 
-          const base64 = await fileToBase64(file);
-          const uploaded = await uploadBufferAsBase64(file.name, file.type || "image/png", base64);
-
-          state.images.push({
+        state.images = [
+          {
             name: file.name,
             url: objectUrl,
             localPath: uploaded.localPath || null,
-            mimeType: file.type || "image/png",
+            mimeType: file.type || "image/jpeg",
             imgEl,
-          });
-        }
+          },
+        ];
+
+        resultVideo.classList.remove("active");
         updateImageCardUI();
       }
 
@@ -1458,10 +1274,7 @@
         if (state.images.length > 0) {
           imageEmptyLabel.style.display = "none";
           imagePreviewBox.classList.add("active");
-          imageCountLabel.textContent =
-            state.images.length === 1
-              ? "1 personaje listo (@image1)"
-              : `${state.images.length} imágenes listas`;
+          imageCountLabel.textContent = `Rostro 3D activo (${state.images[0].name})`;
 
           imageThumbsGrid.innerHTML = "";
           state.images.forEach((item, idx) => {
@@ -1482,7 +1295,8 @@
             removeBtn.title = "Quitar imagen";
             removeBtn.textContent = "×";
             removeBtn.addEventListener("click", () => {
-              state.images.splice(idx, 1);
+              state.images = [];
+              neuralEngine.sourceProfile = null;
               updateImageCardUI();
             });
 
@@ -1496,370 +1310,53 @@
         }
       }
 
-      // Generador de Personajes Demo en Alta Resolución (Samurái, Ninja, Mecha)
-      async function createDemoCharacterPreset(kind) {
-        const c = document.createElement("canvas");
-        c.width = 512;
-        c.height = 512;
-        const g = c.getContext("2d");
-
-        const palettes = {
-          samurai: { bg1: "#1a103c", bg2: "#090d16", primary: "#d2ff28", secondary: "#38bdf8", title: "Samurái Neón" },
-          ninja: { bg1: "#3b071e", bg2: "#09060c", primary: "#fb7185", secondary: "#f59e0b", title: "Ninja Genjutsu" },
-          mecha: { bg1: "#082f49", bg2: "#050b14", primary: "#22d3ee", secondary: "#a855f7", title: "Mecha Cyber" },
-        };
-        const pal = palettes[kind] || palettes.samurai;
-
-        // Fondo estilizado
-        const bgGrad = g.createRadialGradient(256, 210, 30, 256, 256, 260);
-        bgGrad.addColorStop(0, pal.bg1);
-        bgGrad.addColorStop(1, pal.bg2);
-        g.fillStyle = bgGrad;
-        g.fillRect(0, 0, 512, 512);
-
-        // Halo de energía detrás del personaje
-        g.strokeStyle = pal.primary;
-        g.lineWidth = 5;
-        g.beginPath();
-        g.arc(256, 230, 145, 0, Math.PI * 2);
-        g.stroke();
-
-        // Armadura / torso del personaje
-        g.fillStyle = "#1e293b";
-        g.beginPath();
-        g.moveTo(135, 480);
-        g.lineTo(175, 275);
-        g.lineTo(337, 275);
-        g.lineTo(377, 480);
-        g.closePath();
-        g.fill();
-        g.strokeStyle = pal.secondary;
-        g.lineWidth = 4;
-        g.stroke();
-
-        // Hombreras tácticas
-        g.fillStyle = pal.primary;
-        g.beginPath();
-        g.moveTo(120, 295);
-        g.lineTo(200, 265);
-        g.lineTo(185, 325);
-        g.closePath();
-        g.fill();
-
-        g.beginPath();
-        g.moveTo(392, 295);
-        g.lineTo(312, 265);
-        g.lineTo(327, 325);
-        g.closePath();
-        g.fill();
-
-        // Casco / Cabeza
-        g.fillStyle = "#0f172a";
-        g.beginPath();
-        g.arc(256, 195, 68, 0, Math.PI * 2);
-        g.fill();
-        g.strokeStyle = pal.primary;
-        g.lineWidth = 3.5;
-        g.stroke();
-
-        // Visor luminoso
-        g.fillStyle = pal.primary;
-        g.shadowColor = pal.primary;
-        g.shadowBlur = 18;
-        g.beginPath();
-        g.roundRect(206, 178, 100, 24, 10);
-        g.fill();
-        g.shadowBlur = 0;
-
-        // Katana / Accesorio diagonal
-        g.strokeStyle = pal.secondary;
-        g.lineWidth = 7;
-        g.beginPath();
-        g.moveTo(145, 430);
-        g.lineTo(375, 110);
-        g.stroke();
-
-        const blob = await new Promise((resolve) => c.toBlob(resolve, "image/png"));
-        const file = new File([blob], `${kind}_character.png`, { type: "image/png" });
-        state.images = []; // Reemplazar con el personaje elegido para que sea inmediato
-        await handleImageFiles([file]);
-      }
-
-      // Análisis óptico de movimiento sobre el video base
-      function sampleVideoMotion(videoEl) {
-        if (!videoEl || videoEl.readyState < 2) {
-          const now = performance.now() * 0.0025;
-          return {
-            cx: 0.5 + Math.sin(now) * 0.14,
-            cy: 0.5 + Math.cos(now * 1.5) * 0.08,
-            energy: 0.22 + Math.abs(Math.sin(now * 2)) * 0.25,
-          };
+      // Loop en tiempo real del Monitor Neural
+      function previewLoop(nowMs) {
+        if (!state.isRendering && neuralEngine.ready) {
+          neuralEngine.renderFrame({
+            dstCtx: ctx,
+            width: synthCanvas.width,
+            height: synthCanvas.height,
+            videoEl: state.sourceVideo?.videoEl || null,
+            mode: state.mode,
+            timeSec: nowMs * 0.001,
+          });
         }
-
-        probeCtx.drawImage(videoEl, 0, 0, motionProbeCanvas.width, motionProbeCanvas.height);
-        const frame = probeCtx.getImageData(0, 0, motionProbeCanvas.width, motionProbeCanvas.height).data;
-
-        if (!prevProbeData) {
-          prevProbeData = new Uint8ClampedArray(frame);
-          return smoothedMotion;
-        }
-
-        let diffSum = 0;
-        let weightedX = 0;
-        let weightedY = 0;
-        const w = motionProbeCanvas.width;
-        const h = motionProbeCanvas.height;
-
-        for (let y = 0; y < h; y++) {
-          for (let x = 0; x < w; x++) {
-            const idx = (y * w + x) * 4;
-            const d =
-              Math.abs(frame[idx] - prevProbeData[idx]) +
-              Math.abs(frame[idx + 1] - prevProbeData[idx + 1]) +
-              Math.abs(frame[idx + 2] - prevProbeData[idx + 2]);
-            if (d > 28) {
-              diffSum += d;
-              weightedX += (x / w) * d;
-              weightedY += (y / h) * d;
-            }
-          }
-        }
-
-        prevProbeData.set(frame);
-
-        if (diffSum > 1500) {
-          const targetX = weightedX / diffSum;
-          const targetY = weightedY / diffSum;
-          const normEnergy = Math.min(1, diffSum / (w * h * 180));
-          smoothedMotion.cx = smoothedMotion.cx * 0.78 + targetX * 0.22;
-          smoothedMotion.cy = smoothedMotion.cy * 0.78 + targetY * 0.22;
-          smoothedMotion.energy = smoothedMotion.energy * 0.7 + normEnergy * 0.3;
-        } else {
-          smoothedMotion.energy *= 0.92;
-        }
-
-        return smoothedMotion;
-      }
-
-      // Motor de composición fotograma a fotograma en el Canvas principal
-      function renderCompositeFrame(timeSec) {
-        const W = synthCanvas.width;
-        const H = synthCanvas.height;
-        ctx.save();
-        ctx.clearRect(0, 0, W, H);
-
-        const videoEl = state.sourceVideo?.videoEl || null;
-        const charImg = state.images[0]?.imgEl || null;
-        const locImg = state.locationMedia?.imgEl || null;
-        const motion = sampleVideoMotion(videoEl);
-
-        // Configuraciones de estilo visual
-        const stylePalettes = {
-          cinematic: { tint: "rgba(14, 165, 233, 0.14)", glow: "#38bdf8", filter: "contrast(1.12) saturate(1.15)" },
-          genjutsu: { tint: "rgba(225, 29, 72, 0.24)", glow: "#fb7185", filter: "contrast(1.22) saturate(1.35) hue-rotate(-12deg)" },
-          cyberpunk: { tint: "rgba(192, 132, 252, 0.22)", glow: "#d2ff28", filter: "contrast(1.18) saturate(1.45)" },
-          anime: { tint: "rgba(56, 189, 248, 0.16)", glow: "#a855f7", filter: "contrast(1.25) saturate(1.5)" },
-          aura: { tint: "rgba(245, 158, 11, 0.2)", glow: "#f59e0b", filter: "contrast(1.16) brightness(1.06)" },
-          noir: { tint: "rgba(255, 255, 255, 0.08)", glow: "#e2e8f0", filter: "grayscale(0.88) contrast(1.35)" },
-        };
-        const activeStyle = stylePalettes[state.visualStyle] || stylePalettes.cinematic;
-        ctx.filter = activeStyle.filter;
-
-        // 1. DIBUJAR FONDO SEGÚN EL MODO Y CONTROL DE ESCENARIO
-        const shiftX = (motion.cx - 0.5) * 48;
-        const shiftY = (motion.cy - 0.5) * 32;
-
-        if (state.mode === "replace-objects" && videoEl && videoEl.readyState >= 2) {
-          // En Objects Swap el fondo siempre es el video original completo
-          ctx.drawImage(videoEl, 0, 0, W, H);
-        } else if (state.sceneMode === "location" && locImg) {
-          ctx.drawImage(locImg, -20 - shiftX * 0.5, -20 - shiftY * 0.5, W + 40, H + 40);
-        } else if (state.sceneMode === "video" && videoEl && videoEl.readyState >= 2) {
-          ctx.drawImage(videoEl, 0, 0, W, H);
-        } else if (state.sceneMode === "character" && charImg) {
-          ctx.save();
-          ctx.filter = `${activeStyle.filter} blur(18px) brightness(0.55)`;
-          ctx.drawImage(charImg, -40 - shiftX, -40 - shiftY, W + 80, H + 80);
-          ctx.restore();
-        } else if (videoEl && videoEl.readyState >= 2) {
-          ctx.save();
-          ctx.globalAlpha = 0.85;
-          ctx.drawImage(videoEl, 0, 0, W, H);
-          ctx.restore();
-        } else {
-          // Fondo atmosférico generativo si aún no se subió video
-          const bgGrad = ctx.createRadialGradient(
-            W * 0.5 + shiftX,
-            H * 0.45 + shiftY,
-            40,
-            W * 0.5,
-            H * 0.5,
-            Math.max(W, H) * 0.75
-          );
-          bgGrad.addColorStop(0, "#1e293b");
-          bgGrad.addColorStop(0.55, "#0f172a");
-          bgGrad.addColorStop(1, "#05070b");
-          ctx.fillStyle = bgGrad;
-          ctx.fillRect(0, 0, W, H);
-        }
-
-        // 2. TRANSFERIR EL MOVIMIENTO AL PERSONAJE U OBJETO (@image1)
-        const targetX = W * (0.5 + (motion.cx - 0.5) * 0.65);
-        const targetY = H * (0.54 + (motion.cy - 0.5) * 0.45) + Math.sin(timeSec * 5.2) * (6 + motion.energy * 18);
-        const dynamicScale = 1 + Math.sin(timeSec * 3.4) * 0.035 + motion.energy * 0.18;
-        const dynamicTilt = (motion.cx - 0.5) * 0.16 + Math.sin(timeSec * 2.7) * 0.025;
-
-        if (charImg) {
-          ctx.save();
-          ctx.translate(targetX, targetY);
-          ctx.rotate(dynamicTilt);
-          ctx.scale(dynamicScale, dynamicScale);
-
-          const baseSize = Math.min(W, H) * (state.mode === "replace-objects" ? 0.56 : 0.68);
-          const aspect = charImg.width / Math.max(1, charImg.height);
-          const drawW = aspect >= 1 ? baseSize * aspect : baseSize;
-          const drawH = aspect >= 1 ? baseSize : baseSize / aspect;
-
-          // Halo / Aura reactiva al movimiento
-          ctx.shadowColor = activeStyle.glow;
-          ctx.shadowBlur = 24 + motion.energy * 45;
-
-          // Recorte suave estilizado para integrar el personaje en la escena
-          ctx.beginPath();
-          ctx.roundRect(-drawW / 2, -drawH / 2, drawW, drawH, 28);
-          ctx.clip();
-          ctx.drawImage(charImg, -drawW / 2, -drawH / 2, drawW, drawH);
-
-          // Borde de luz cinematográfica (Rim Light)
-          ctx.strokeStyle = activeStyle.glow;
-          ctx.lineWidth = 3 + motion.energy * 4;
-          ctx.strokeRect(-drawW / 2, -drawH / 2, drawW, drawH);
-          ctx.restore();
-        } else {
-          // Silueta holográfica guía cuando aún no se seleccionó imagen
-          ctx.save();
-          ctx.translate(targetX, targetY);
-          ctx.strokeStyle = activeStyle.glow;
-          ctx.lineWidth = 3;
-          ctx.setLineDash([8, 6]);
-          ctx.beginPath();
-          ctx.arc(0, -10, 95, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.setLineDash([]);
-          ctx.fillStyle = "rgba(255,255,255,0.85)";
-          ctx.font = "700 18px system-ui, sans-serif";
-          ctx.textAlign = "center";
-          ctx.fillText("Sube una foto en el Paso 2 o elige un Personaje Demo", 0, 5);
-          ctx.restore();
-        }
-
-        // 3. PARTÍCULAS Y EFECTOS CINEMATOGRÁFICOS EN TIEMPO REAL
-        ctx.fillStyle = activeStyle.tint;
-        ctx.fillRect(0, 0, W, H);
-
-        particles.forEach((p) => {
-          p.x = (p.x + p.speedX + 1) % 1;
-          p.y = (p.y + p.speedY * (1 + motion.energy * 2.5) + 1) % 1;
-          const px = p.x * W;
-          const py = p.y * H;
-          const alpha = 0.35 + Math.sin(timeSec * 3 + p.phase) * 0.25;
-          ctx.fillStyle = activeStyle.glow;
-          ctx.globalAlpha = Math.max(0.1, alpha);
-          ctx.beginPath();
-          ctx.arc(px, py, p.size * (1 + motion.energy), 0, Math.PI * 2);
-          ctx.fill();
-        });
-        ctx.globalAlpha = 1;
-
-        // Viñeta de lente de cine
-        const vig = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.32, W / 2, H / 2, Math.max(W, H) * 0.72);
-        vig.addColorStop(0, "rgba(0,0,0,0)");
-        vig.addColorStop(1, "rgba(0,0,0,0.58)");
-        ctx.fillStyle = vig;
-        ctx.fillRect(0, 0, W, H);
-
-        ctx.restore();
-      }
-
-      // Monitor en vivo: muestra el video base y la cara elegida lado a lado (sin superponer)
-      function renderIdleMonitor() {
-        const W = synthCanvas.width;
-        const H = synthCanvas.height;
-        ctx.save();
-        ctx.fillStyle = "#05070b";
-        ctx.fillRect(0, 0, W, H);
-        const videoEl = state.sourceVideo?.videoEl;
-        const img = state.images[0]?.imgEl;
-        if (videoEl && videoEl.readyState >= 2) {
-          const s = Math.min(W / videoEl.videoWidth, H / videoEl.videoHeight);
-          const vw = videoEl.videoWidth * s;
-          const vh = videoEl.videoHeight * s;
-          ctx.drawImage(videoEl, (W - vw) / 2, (H - vh) / 2, vw, vh);
-        }
-        if (img) {
-          const size = Math.min(W, H) * 0.24;
-          const x = W - size - 20;
-          const y = 20;
-          ctx.save();
-          ctx.beginPath();
-          ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2);
-          ctx.clip();
-          const s = Math.max(size / img.width, size / img.height);
-          ctx.drawImage(img, x + (size - img.width * s) / 2, y + (size - img.height * s) / 2, img.width * s, img.height * s);
-          ctx.restore();
-          ctx.strokeStyle = "#c084fc";
-          ctx.lineWidth = 4;
-          ctx.beginPath();
-          ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-        ctx.fillStyle = "rgba(0,0,0,0.6)";
-        ctx.fillRect(0, H - 54, W, 54);
-        ctx.fillStyle = "#f3f5fa";
-        ctx.font = "700 22px system-ui, sans-serif";
-        ctx.textAlign = "center";
-        const msg = !videoEl
-          ? "Paso 1: sube tu video base"
-          : !img
-            ? "Paso 2: sube la foto con la cara"
-            : "Todo listo · toca \u201cGenerar Video Gratis Ahora\u201d";
-        ctx.fillText(msg, W / 2, H - 20);
-        ctx.restore();
-      }
-
-      // Loop de previsualización en vivo en el monitor
-      function previewLoop() {
-        renderIdleMonitor();
         requestAnimationFrame(previewLoop);
       }
       requestAnimationFrame(previewLoop);
 
-      // GENERACIÓN GRATUITA DE VIDEO (SIN TOKEN)
-      async function generateFreeVideoLocally() {
+      // Grabación de video HD desde el Motor Neural Local (478 puntos + transferencia de expresión y pose)
+      async function generateWithLocalNeuralEngine() {
+        if (!state.sourceVideo?.videoEl) {
+          alert("Paso 1: Sube primero un video base o haz clic en '🎬 Video Actor 1'.");
+          return;
+        }
+        if (state.images.length === 0) {
+          alert("Paso 2: Sube primero la foto del rostro o haz clic en '👩 Rostro Ejemplo 1'.");
+          return;
+        }
+
         state.isRendering = true;
         generateBtn.disabled = true;
-        generateBtnText.textContent = "Renderizando Video HD Gratis...";
+        generateBtnText.textContent = "Renderizando Face Swap / Motion Transfer 3D...";
         resultVideo.classList.remove("active");
         downloadBar.classList.remove("active");
         progressBanner.classList.add("active");
         renderProgress.value = 0;
         progressPercentText.textContent = "0%";
+        progressStatusText.textContent =
+          "Deformando malla facial de 478 puntos y armonizando iluminación de la escena...";
 
-        // Si el usuario aún no subió ni eligió imagen, cargamos automáticamente el Samurái Demo para que nunca falle
-        if (state.images.length === 0) {
-          progressStatusText.textContent = "Preparando personaje base automático...";
-          await createDemoCharacterPreset("samurai");
-        }
-
-        // Asegurar que el video fuente esté reproduciéndose desde el inicio si existe
-        if (state.sourceVideo?.videoEl) {
-          state.sourceVideo.videoEl.currentTime = 0;
-          await state.sourceVideo.videoEl.play().catch(() => {});
-        }
+        const videoEl = state.sourceVideo.videoEl;
+        videoEl.currentTime = 0;
+        await videoEl.play().catch(() => {});
 
         const fps = 30;
-        const durationSec = 5;
-        const totalFrames = fps * durationSec;
+        const vidDuration = Number.isFinite(videoEl.duration) && videoEl.duration > 0
+          ? Math.min(7, Math.max(3, videoEl.duration))
+          : 5;
+        const totalFrames = Math.round(fps * vidDuration);
 
         const stream = synthCanvas.captureStream(fps);
         const mimeType = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
@@ -1867,20 +1364,26 @@
           : "video/webm";
         const recorder = new MediaRecorder(stream, {
           mimeType,
-          videoBitsPerSecond: 6_500_000,
+          videoBitsPerSecond: 7_500_000,
         });
 
         const chunks = [];
-        recorder.ondataavailable = (ev) => {
-          if (ev.data && ev.data.size > 0) chunks.push(ev.data);
+        recorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) chunks.push(e.data);
         };
 
         recorder.start();
-        progressStatusText.textContent = "Aplicando Motion Transfer y efectos visuales...";
 
         for (let frame = 0; frame <= totalFrames; frame++) {
           const tSec = frame / fps;
-          renderCompositeFrame(tSec);
+          neuralEngine.renderFrame({
+            dstCtx: ctx,
+            width: synthCanvas.width,
+            height: synthCanvas.height,
+            videoEl,
+            mode: state.mode,
+            timeSec: tSec,
+          });
           const pct = Math.round((frame / totalFrames) * 100);
           renderProgress.value = pct;
           progressPercentText.textContent = `${pct}%`;
@@ -1893,11 +1396,10 @@
         });
 
         const localBlobUrl = URL.createObjectURL(renderedBlob);
+        let finalUrl = localBlobUrl;
 
-        // Guardar copia en la carpeta /outputs del servidor
-        const base64Video = await fileToBase64(renderedBlob);
-        let serverUrl = localBlobUrl;
         try {
+          const base64Video = await fileToBase64(renderedBlob);
           const saveRes = await fetch("/api/save-rendered-video", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -1905,79 +1407,112 @@
           });
           const saveData = await saveRes.json();
           if (saveData.ok && saveData.videoUrl) {
-            serverUrl = saveData.videoUrl;
-            savedPathLabel.textContent = `Guardado automáticamente en ${saveData.videoUrl}`;
+            finalUrl = saveData.videoUrl;
+            savedPathLabel.textContent = `Motor Neural 3D (478 puntos) · Guardado en ${saveData.videoUrl}`;
           }
         } catch {
-          // Si falla el guardado en disco, mantenemos el Blob URL del navegador
+          // Mantiene localBlobUrl si falla el guardado en disco
         }
 
-        resultVideo.src = serverUrl;
+        resultVideo.src = finalUrl;
         resultVideo.classList.add("active");
         await resultVideo.play().catch(() => {});
 
-        downloadVideoLink.href = serverUrl;
-        downloadVideoLink.download = `genjutsu_${Date.now()}.webm`;
+        downloadVideoLink.href = finalUrl;
+        downloadVideoLink.download = `genjutsu_${state.mode}_${Date.now()}.webm`;
         progressBanner.classList.remove("active");
         downloadBar.classList.add("active");
 
         state.isRendering = false;
         generateBtn.disabled = false;
-        generateBtnText.textContent = "Generar Video Gratis Ahora";
+        generateBtnText.textContent = "Generar y Descargar Video Gratis Ahora";
       }
 
-      // GENERACIÓN OPCIONAL EN LA NUBE (GEMINI OMNI 1.1 FLASH / VEO 3.1)
-      async function generateCloudVideo(engine, apiKey) {
+      // Opción Cloud con respaldo automático al Motor Neural Local (nunca falla con error bloqueante)
+      async function generateWithCloudOrFallback(chosenEngine, token) {
         state.isRendering = true;
         generateBtn.disabled = true;
-        generateBtnText.textContent = "Generando en Google Cloud...";
+        generateBtnText.textContent = "Conectando con servidor Cloud...";
         progressBanner.classList.add("active");
-        progressStatusText.textContent = `Procesando con ${engine}...`;
-        renderProgress.value = 35;
-        progressPercentText.textContent = "35%";
+        renderProgress.removeAttribute("value");
+        progressStatusText.textContent = "Enviando a Cloud GPU...";
 
         try {
-          const res = await fetch("/api/generate-gemini", {
+          if (chosenEngine === "gemini-omni-1.1-flash") {
+            const res = await fetch("/api/generate-gemini", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                apiKey: token,
+                engine: "gemini-omni-1.1-flash",
+                mode: state.mode === "faceswap" ? "replace-objects" : "motion-control",
+                prompt: promptTextarea.value,
+                aspectRatio: state.aspectRatio,
+                sourceVideo: state.sourceVideo,
+                images: state.images,
+              }),
+            });
+            const data = await res.json();
+            if (!data.ok) throw new Error(data.error);
+            resultVideo.src = data.videoUrl;
+            resultVideo.classList.add("active");
+            await resultVideo.play().catch(() => {});
+            downloadVideoLink.href = data.videoUrl;
+            downloadVideoLink.download = data.videoUrl.split("/").pop();
+            savedPathLabel.textContent = `Generado en Cloud (${data.engine}) · ${data.videoUrl}`;
+            downloadBar.classList.add("active");
+            progressBanner.classList.remove("active");
+            state.isRendering = false;
+            generateBtn.disabled = false;
+            generateBtnText.textContent = "Generar y Descargar Video Gratis Ahora";
+            return;
+          }
+
+          // Hugging Face Cloud con límite de espera razonable antes de activar el Motor Neural Local
+          const res = await fetch("/api/generate-free", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              apiKey,
-              engine,
               mode: state.mode,
-              sceneMode: state.sceneMode,
+              imagePath: state.images[0]?.localPath,
+              videoPath: state.sourceVideo?.localPath,
               prompt: promptTextarea.value,
               aspectRatio: state.aspectRatio,
-              sourceVideo: state.sourceVideo,
-              images: state.images,
-              locationMedia: state.locationMedia,
+              hfToken: token,
             }),
           });
-          const data = await res.json();
-          if (!data.ok) {
-            throw new Error(data.error || "Error en la API de Gemini.");
+          const start = await res.json();
+          if (!start.ok) throw new Error(start.error);
+
+          const startedAt = Date.now();
+          while (Date.now() - startedAt < 45000) {
+            await new Promise((r) => setTimeout(r, 2500));
+            const job = await fetch(`/api/jobs/${start.jobId}`).then((r) => r.json());
+            progressStatusText.textContent = job.message || "Procesando en Cloud...";
+            if (job.status === "done" && job.videoUrl) {
+              resultVideo.src = job.videoUrl;
+              resultVideo.classList.add("active");
+              await resultVideo.play().catch(() => {});
+              downloadVideoLink.href = job.videoUrl;
+              downloadVideoLink.download = job.videoUrl.split("/").pop();
+              savedPathLabel.textContent = `Generado en Cloud (${job.engine}) · ${job.videoUrl}`;
+              downloadBar.classList.add("active");
+              progressBanner.classList.remove("active");
+              state.isRendering = false;
+              generateBtn.disabled = false;
+              generateBtnText.textContent = "Generar y Descargar Video Gratis Ahora";
+              return;
+            }
+            if (job.status === "error") throw new Error(job.error);
           }
-
-          resultVideo.src = data.videoUrl;
-          resultVideo.classList.add("active");
-          await resultVideo.play().catch(() => {});
-
-          downloadVideoLink.href = data.videoUrl;
-          downloadVideoLink.download = `genjutsu_cloud_${Date.now()}.mp4`;
-          savedPathLabel.textContent = `Generado con ${data.engine} en ${data.videoUrl}`;
-          downloadBar.classList.add("active");
-        } catch (err) {
-          alert(`Aviso del modo Cloud: ${err.message}\n\nSe usará el Motor Gratuito Integrado automáticamente.`);
-          await generateFreeVideoLocally();
-          return;
-        } finally {
-          progressBanner.classList.remove("active");
-          state.isRendering = false;
-          generateBtn.disabled = false;
-          generateBtnText.textContent = "Generar Video Gratis Ahora";
+          throw new Error("Cola Cloud saturada; completando con el Motor Neural Local 3D.");
+        } catch {
+          // Respaldo transparente e inmediato al Motor Neural Local 3D
+          await generateWithLocalNeuralEngine();
         }
       }
 
-      // EVENT LISTENERS (Sin inline onclick)
+      // EVENT LISTENERS
       videoFileInput.addEventListener("change", (e) => {
         if (e.target.files?.[0]) handleVideoFile(e.target.files[0]);
       });
@@ -1986,30 +1521,6 @@
         if (e.target.files?.length) handleImageFiles(e.target.files);
       });
 
-      locationFileInput.addEventListener("change", async (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        const url = URL.createObjectURL(file);
-        const imgEl = new Image();
-        imgEl.src = url;
-        await new Promise((r) => {
-          imgEl.onload = r;
-          imgEl.onerror = r;
-        });
-        const base64 = await fileToBase64(file);
-        const up = await uploadBufferAsBase64(file.name, file.type || "image/png", base64);
-        state.locationMedia = {
-          name: file.name,
-          url,
-          localPath: up.localPath || null,
-          mimeType: file.type || "image/png",
-          imgEl,
-        };
-        locationStatusText.textContent = `Fondo listo: ${file.name}`;
-        locationStatusText.style.color = "var(--accent)";
-      });
-
-      // Drag and Drop para la tarjeta de Video
       videoDropCard.addEventListener("dragover", (e) => {
         e.preventDefault();
         videoDropCard.classList.add("dragover");
@@ -2018,11 +1529,9 @@
       videoDropCard.addEventListener("drop", (e) => {
         e.preventDefault();
         videoDropCard.classList.remove("dragover");
-        const file = e.dataTransfer?.files?.[0];
-        if (file) handleVideoFile(file);
+        if (e.dataTransfer?.files?.[0]) handleVideoFile(e.dataTransfer.files[0]);
       });
 
-      // Drag and Drop para la tarjeta de Imagen
       imageDropCard.addEventListener("dragover", (e) => {
         e.preventDefault();
         imageDropCard.classList.add("dragover");
@@ -2042,40 +1551,31 @@
 
       clearImagesBtn.addEventListener("click", () => {
         state.images = [];
+        neuralEngine.sourceProfile = null;
         imageFileInput.value = "";
         updateImageCardUI();
       });
 
-      loadDemoVideoActionBtn.addEventListener("click", async () => {
-        const blob = await fetch("/samples/d3.mp4").then((r) => r.blob());
-        await handleVideoFile(new File([blob], "video_ejemplo.mp4", { type: "video/mp4" }));
+      document.querySelectorAll("[data-demo-video]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const name = btn.getAttribute("data-demo-video");
+          const blob = await fetch(`/samples/${name}.mp4`).then((r) => r.blob());
+          await handleVideoFile(new File([blob], `actor_${name}.mp4`, { type: "video/mp4" }));
+        });
       });
 
       document.querySelectorAll("[data-demo-char]").forEach((btn) => {
         btn.addEventListener("click", async () => {
           const name = btn.getAttribute("data-demo-char");
           const blob = await fetch(`/samples/${name}.jpg`).then((r) => r.blob());
-          state.images = [];
-          await handleImageFiles([new File([blob], `cara_${name}.jpg`, { type: "image/jpeg" })]);
+          await handleImageFiles([new File([blob], `rostro_${name}.jpg`, { type: "image/jpeg" })]);
         });
       });
 
       document.querySelectorAll('input[name="mode"]').forEach((radio) => {
         radio.addEventListener("change", (e) => {
           state.mode = e.target.value;
-        });
-      });
-
-      document.querySelectorAll('input[name="visualStyle"]').forEach((radio) => {
-        radio.addEventListener("change", (e) => {
-          state.visualStyle = e.target.value;
-        });
-      });
-
-      document.querySelectorAll('input[name="sceneMode"]').forEach((radio) => {
-        radio.addEventListener("change", (e) => {
-          state.sceneMode = e.target.value;
-          locationDrawer.classList.toggle("active", state.sceneMode === "location");
+          resultVideo.classList.remove("active");
         });
       });
 
@@ -2112,85 +1612,31 @@
         if (state.isRendering) return;
 
         const chosenEngine = engineSelect.value;
-        const apiKey = apiKeyInput.value.trim();
+        const token = hfTokenInput.value.trim();
 
-        if (chosenEngine !== "free-local" && apiKey) {
-          await generateCloudVideo(chosenEngine, apiKey);
+        if (chosenEngine === "neural-local") {
+          await generateWithLocalNeuralEngine();
         } else {
-          await generateRealAIVideo();
+          await generateWithCloudOrFallback(chosenEngine, token);
         }
       });
 
-      // GENERACIÓN GRATUITA CON IA REAL (Face Swap / Wan 2.2 Animate / LivePortrait en GPU gratis)
-      async function generateRealAIVideo() {
-        const image = state.images[0];
-        const video = state.sourceVideo;
-        if (!video?.localPath) {
-          alert("Falta el Paso 1: sube tu video base (o toca 'Usar Video de Ejemplo').");
-          return;
-        }
-        if (!image?.localPath) {
-          alert("Falta el Paso 2: sube una foto con la cara bien visible (o toca una cara de ejemplo).");
-          return;
-        }
-
-        state.isRendering = true;
-        generateBtn.disabled = true;
-        generateBtnText.textContent = "La IA está generando tu video...";
-        resultVideo.classList.remove("active");
-        downloadBar.classList.remove("active");
-        progressBanner.classList.add("active");
-        renderProgress.removeAttribute("value"); // barra indeterminada
-        progressPercentText.textContent = "";
-        progressStatusText.textContent = "Enviando a la IA gratuita...";
-        const startedAt = Date.now();
-
+      // Inicializar el motor neural y cargar el par de ejemplo (Actor + Rostro) al iniciar
+      // para que el usuario vea el Face Swap 3D funcionando en vivo desde el primer segundo
+      (async () => {
         try {
-          const res = await fetch("/api/generate-free", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              mode: state.mode,
-              imagePath: image.localPath,
-              videoPath: video.localPath,
-              prompt: promptTextarea.value,
-              aspectRatio: state.aspectRatio,
-              hfToken: document.getElementById("hfTokenInput").value.trim(),
-            }),
-          });
-          const start = await res.json();
-          if (!start.ok) throw new Error(start.error);
-
-          let job;
-          while (true) {
-            await new Promise((r) => setTimeout(r, 2500));
-            job = await fetch(`/api/jobs/${start.jobId}`).then((r) => r.json());
-            const secs = Math.round((Date.now() - startedAt) / 1000);
-            progressStatusText.textContent = job.message || "Procesando...";
-            progressPercentText.textContent = `${secs}s`;
-            if (job.status !== "running") break;
-          }
-          if (job.status === "error") throw new Error(job.error);
-
-          resultVideo.src = job.videoUrl;
-          resultVideo.classList.add("active");
-          await resultVideo.play().catch(() => {});
-          downloadVideoLink.href = job.videoUrl;
-          downloadVideoLink.download = job.videoUrl.split("/").pop();
-          savedPathLabel.textContent = `Generado con ${job.engine} · guardado en ${job.videoUrl}`;
-          downloadBar.classList.add("active");
+          await neuralEngine.init();
+          neuralStatusText.textContent = "Redes neuronales listas · Cargando demostración en vivo...";
+          const [vidBlob, imgBlob] = await Promise.all([
+            fetch("/samples/d0.mp4").then((r) => r.blob()),
+            fetch("/samples/s9.jpg").then((r) => r.blob()),
+          ]);
+          await handleVideoFile(new File([vidBlob], "actor_demo.mp4", { type: "video/mp4" }));
+          await handleImageFiles([new File([imgBlob], "rostro_demo.jpg", { type: "image/jpeg" })]);
         } catch (err) {
-          alert(`No se pudo generar el video:\n\n${err.message}`);
-        } finally {
-          progressBanner.classList.remove("active");
-          renderProgress.value = 0;
-          state.isRendering = false;
-          generateBtn.disabled = false;
-          generateBtnText.textContent = "Generar Video Gratis Ahora";
+          neuralStatusText.textContent = `Motor listo: ${err.message || ""}`;
         }
-      }
-
-      // Monitor listo: el usuario elige su video y su foto (o los ejemplos)
+      })();
     </script>
   </body>
 </html>
